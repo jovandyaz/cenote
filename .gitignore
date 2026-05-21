@@ -1,0 +1,6 @@
+# stub — replaced in Task 1
+__pycache__/
+.venv/
+.env
+.DS_Store
+.claude/settings.local.json
