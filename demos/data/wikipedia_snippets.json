@@ -1,0 +1,102 @@
+[
+  {
+    "id": "wiki-1",
+    "title": "Cenote",
+    "content": "A cenote is a natural sinkhole that exposes groundwater beneath a limestone surface. Found mostly in the Yucatán Peninsula, cenotes were sacred to the ancient Maya as sources of fresh water and ritual sites."
+  },
+  {
+    "id": "wiki-2",
+    "title": "Reciprocal Rank Fusion",
+    "content": "Reciprocal Rank Fusion (RRF) is a rank aggregation method that combines results from multiple ranked lists without requiring score normalization. It is parameter-light and often outperforms more complex score-based fusion methods."
+  },
+  {
+    "id": "wiki-3",
+    "title": "Vector database",
+    "content": "A vector database indexes high-dimensional vectors and supports approximate nearest-neighbor search. Common applications include semantic search, recommendation systems, and retrieval-augmented generation (RAG)."
+  },
+  {
+    "id": "wiki-4",
+    "title": "BM25",
+    "content": "BM25 (Best Match 25) is a bag-of-words retrieval function used by search engines to rank documents. It improves on TF-IDF by saturating term frequency and applying document-length normalization."
+  },
+  {
+    "id": "wiki-5",
+    "title": "Dense retrieval",
+    "content": "Dense retrieval uses dense vector representations from neural encoders to find semantically similar documents. Unlike BM25, it captures meaning beyond exact keyword matches and works well across languages."
+  },
+  {
+    "id": "wiki-6",
+    "title": "HNSW",
+    "content": "Hierarchical Navigable Small World (HNSW) is a graph-based algorithm for approximate nearest-neighbor search. It builds a multi-layer graph that allows logarithmic-time queries in high-dimensional spaces."
+  },
+  {
+    "id": "wiki-7",
+    "title": "ColBERT",
+    "content": "ColBERT (Contextualized Late Interaction over BERT) is a retrieval model that computes query and document embeddings independently and scores them via a MaxSim operator. It balances accuracy and efficiency."
+  },
+  {
+    "id": "wiki-8",
+    "title": "Word embedding",
+    "content": "Word embeddings are dense vector representations of words learned from large text corpora. Models like Word2Vec and GloVe capture semantic relationships so that similar words have similar vector representations."
+  },
+  {
+    "id": "wiki-9",
+    "title": "Transformer architecture",
+    "content": "The Transformer is a neural network architecture introduced in 2017 that relies on self-attention mechanisms. It underlies modern large language models such as GPT and BERT and enables parallel processing of sequences."
+  },
+  {
+    "id": "wiki-10",
+    "title": "Attention mechanism",
+    "content": "The attention mechanism allows a neural network to focus on relevant parts of an input sequence when producing an output. Scaled dot-product attention computes a weighted sum of values based on query-key similarity scores."
+  },
+  {
+    "id": "wiki-11",
+    "title": "Fine-tuning",
+    "content": "Fine-tuning adapts a pre-trained model to a specific task by continuing training on a smaller labeled dataset. It is more efficient than training from scratch and often achieves strong performance with limited data."
+  },
+  {
+    "id": "wiki-12",
+    "title": "Yucatán Peninsula",
+    "content": "The Yucatán Peninsula is a landmass in southeastern Mexico and northern Central America. It is known for its limestone karst topography, numerous cenotes, Maya archaeological sites, and the Chicxulub impact crater."
+  },
+  {
+    "id": "wiki-13",
+    "title": "Maya civilization",
+    "content": "The Maya were a Mesoamerican civilization known for their advanced writing system, calendar, mathematics, and architecture. Their cities, including Chichén Itzá and Palenque, flourished from roughly 2000 BCE to the 16th century CE."
+  },
+  {
+    "id": "wiki-14",
+    "title": "Mexico City",
+    "content": "Mexico City is the capital and largest city of Mexico. Built on the site of the Aztec capital Tenochtitlan, it is one of the most populous metropolitan areas in the world and a major political and economic hub."
+  },
+  {
+    "id": "wiki-15",
+    "title": "CFDI",
+    "content": "The Comprobante Fiscal Digital por Internet (CFDI) is Mexico's mandatory electronic invoicing standard administered by the SAT (Servicio de Administración Tributaria). CFDI 4.0, introduced in 2022, added stricter validation and new data fields."
+  },
+  {
+    "id": "wiki-16",
+    "title": "SAT Mexico",
+    "content": "The Servicio de Administración Tributaria (SAT) is Mexico's tax authority responsible for collecting federal taxes and administering the CFDI electronic invoicing system. It issues PAC certifications to authorized digital signing providers."
+  },
+  {
+    "id": "wiki-17",
+    "title": "Hybrid search",
+    "content": "Hybrid search combines sparse retrieval (e.g., BM25) with dense retrieval (vector search) to leverage the strengths of both approaches. Fusion methods such as RRF are commonly used to merge and re-rank the combined result sets."
+  },
+  {
+    "id": "wiki-18",
+    "title": "pgvector",
+    "content": "pgvector is an open-source PostgreSQL extension that adds vector similarity search. It supports exact and approximate nearest-neighbor queries using HNSW and IVFFlat indexes, making Postgres a viable vector store for production RAG systems."
+  },
+  {
+    "id": "wiki-19",
+    "title": "Retrieval-augmented generation",
+    "content": "Retrieval-augmented generation (RAG) is a technique where a language model retrieves relevant documents from a knowledge base before generating a response. This grounds the output in up-to-date information and reduces hallucination."
+  },
+  {
+    "id": "wiki-20",
+    "title": "Cosine similarity",
+    "content": "Cosine similarity measures the angle between two vectors, returning 1 for identical directions and 0 for orthogonal ones. It is widely used to compare embedding vectors in semantic search because it is invariant to vector magnitude."
+  }
+]

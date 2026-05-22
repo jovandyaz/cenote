@@ -59,6 +59,16 @@ Versioning: [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
 - CI: new `integration-tests` job spins up a Postgres service container,
   exports `TEST_DATABASE_URL`, and runs `pytest -m integration`.
 - Runtime dep: `asyncpg>=0.30`. Dev dep: `asyncpg-stubs>=0.31.2` (types).
+- `demos/quickstart.py`: end-to-end demo CLI — indexes a small EN corpus
+  (`demos/data/wikipedia_snippets.json`, 20 entries) through chunker +
+  embedder + in-memory store, then runs sample queries against
+  `VectorRetriever`. `--provider {mock,voyage,cohere}` toggles between the
+  no-API mock and the real multilingual embedders. Smoke test
+  (`tests/demos/test_quickstart_smoke.py`) runs the mock path on every CI.
+- README: added `## Quickstart` section with the three provider invocations
+  and softened the "LATAM-rooted" claim to match what M1.0 actually ships
+  (multilingual embedders today; Spanish-specific BM25 + ES eval datasets
+  on the M1.1+ roadmap).
 
 ## [0.1.0] - YYYY-MM-DD
 
