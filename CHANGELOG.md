@@ -38,6 +38,11 @@ Versioning: [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
 - Runtime dep: `httpx>=0.27`. Dev dep: `respx>=0.21` (HTTP mocking — no real
   API calls in CI).
 - `.env.example`: template for `VOYAGE_API_KEY`, `COHERE_API_KEY`.
+- `cenote.stores`: `VectorStore` Protocol (multi-tenant, `namespace` mandatory
+  on every method) and `InMemoryVectorStore` (numpy-backed cosine similarity,
+  per-namespace dicts, optional metadata-filter via exact JSONB-style match).
+  Production-grade backend (PgVectorStore) lands in a later task.
+- Runtime dep: `numpy>=2.0`.
 
 ## [0.1.0] - YYYY-MM-DD
 
