@@ -11,11 +11,18 @@ Versioning: [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Added
-- (record here as work lands)
+
+- `cenote.models`: `Document`, `Chunk`, `EmbeddedChunk`, `RetrievalResult`
+  Pydantic v2 models with `extra="forbid"`. `Chunk.make_id(doc_id, pos)`
+  produces deterministic chunk IDs.
+- `cenote.chunkers`: `Chunker` Protocol (with `chunk.content` contract docstring)
+  and `RecursiveCharacterChunker` (priority-list separators, configurable
+  `chunk_size=512` and `chunk_overlap=50`, deep-copied metadata, unicode-safe).
 
 ## [0.1.0] - YYYY-MM-DD
 
 ### Added
+
 - Initial project scaffolding: `uv`, `ruff`, `mypy --strict`, `pytest`, `pre-commit`,
   GitHub Actions CI (lint + type + unit tests, Python 3.12 & 3.13, `pip-audit`).
 - `LICENSE` (Apache 2.0), `CHANGELOG.md`, `SECURITY.md`.
