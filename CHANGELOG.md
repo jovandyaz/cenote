@@ -46,6 +46,19 @@ Versioning: [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
 - `cenote.retrievers`: `Retriever` Protocol and `VectorRetriever` (composes
   any `Embedder` with any `VectorStore`; embeds the query, searches the store,
   normalizes `retriever="vector"` on every `RetrievalResult`).
+- `cenote.stores.PgVectorStore`: production-grade `VectorStore` backed by
+  Postgres + pgvector. Hardenings: transactional `upsert`/`delete`,
+  idempotent migrations tracking (`cenote_schema_migrations` table),
+  exponential-backoff `connect()` retry on container-not-ready races,
+  pre-flight dimension validation, configurable HNSW `m` /
+  `ef_construction` (migration template) and runtime `ef_search`. Initial
+  schema in `001_init.sql` ships a GIN index on `metadata` so `@>` filters
+  are O(log n) instead of seq-scan.
+- `docker-compose.test.yml`: `pgvector/pgvector:pg16` container on port 5433
+  for local integration tests.
+- CI: new `integration-tests` job spins up a Postgres service container,
+  exports `TEST_DATABASE_URL`, and runs `pytest -m integration`.
+- Runtime dep: `asyncpg>=0.30`. Dev dep: `asyncpg-stubs>=0.31.2` (types).
 
 ## [0.1.0] - YYYY-MM-DD
 

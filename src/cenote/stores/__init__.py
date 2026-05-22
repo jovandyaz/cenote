@@ -3,5 +3,6 @@
 
 from cenote.stores.base import VectorStore
 from cenote.stores.memory import InMemoryVectorStore
+from cenote.stores.pgvector import PgVectorStore
 
-__all__ = ["InMemoryVectorStore", "VectorStore"]
+__all__ = ["InMemoryVectorStore", "PgVectorStore", "VectorStore"]

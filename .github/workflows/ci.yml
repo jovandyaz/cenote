@@ -75,3 +75,37 @@ jobs:
         with:
           name: coverage
           path: coverage.xml
+
+  integration-tests:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: cenote
+          POSTGRES_PASSWORD: cenote
+          POSTGRES_DB: cenote_test
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd "pg_isready -U cenote -d cenote_test"
+          --health-interval 2s
+          --health-timeout 5s
+          --health-retries 30
+    env:
+      TEST_DATABASE_URL: postgresql://cenote:cenote@localhost:5433/cenote_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+      - run: uv python install 3.12
+      - run: uv sync --all-extras
+      - name: Wait for Postgres
+        run: |
+          for i in {1..30}; do
+            if pg_isready -h localhost -p 5433 -U cenote; then exit 0; fi
+            sleep 1
+          done
+          exit 1
+      - run: uv run pytest -m integration

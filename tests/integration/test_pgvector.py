@@ -1,0 +1,130 @@
+"""Integration tests for PgVectorStore. Requires Postgres at TEST_DATABASE_URL."""
+
+from __future__ import annotations
+
+import hashlib
+import os
+import uuid
+from collections.abc import AsyncGenerator
+
+import pytest
+import pytest_asyncio
+
+from cenote.models import Chunk, EmbeddedChunk
+from cenote.stores import PgVectorStore
+
+pytestmark = pytest.mark.integration
+
+DSN = os.getenv(
+    "TEST_DATABASE_URL",
+    "postgresql://cenote:cenote@localhost:5433/cenote_test",
+)
+
+
+def _embedded(
+    text: str,
+    vector: list[float],
+    *,
+    idx: int = 0,
+    namespace_doc_id: str = "d",
+) -> EmbeddedChunk:
+    chunk = Chunk(
+        id=f"{namespace_doc_id}:{idx}",
+        document_id=namespace_doc_id,
+        content=text,
+        position=idx,
+        content_hash=hashlib.sha256(text.encode()).hexdigest(),
+    )
+    return EmbeddedChunk(
+        chunk=chunk,
+        embedding=vector,
+        embedding_model="mock:default",
+        dimensions=len(vector),
+    )
+
+
+@pytest_asyncio.fixture
+async def store() -> AsyncGenerator[PgVectorStore, None]:
+    s = await PgVectorStore.connect(DSN, dimensions=4)
+    await s.apply_migrations()
+    yield s
+    await s.close()
+
+
+@pytest.fixture
+def ns() -> str:
+    return f"test-{uuid.uuid4()}"
+
+
+@pytest.mark.asyncio
+class TestPgVectorStore:
+    async def test_upsert_and_search_roundtrip(self, store: PgVectorStore, ns: str) -> None:
+        items = [
+            _embedded("hello", [1.0, 0.0, 0.0, 0.0], idx=0),
+            _embedded("world", [0.0, 1.0, 0.0, 0.0], idx=1),
+        ]
+        await store.upsert(items, namespace=ns)
+        out = await store.search([1.0, 0.0, 0.0, 0.0], namespace=ns, limit=2)
+        assert {r.chunk.content for r in out} == {"hello", "world"}
+        assert out[0].chunk.content == "hello"
+
+    async def test_namespace_isolation(self, store: PgVectorStore) -> None:
+        ns_a = f"a-{uuid.uuid4()}"
+        ns_b = f"b-{uuid.uuid4()}"
+        await store.upsert([_embedded("only-a", [1.0, 0.0, 0.0, 0.0])], namespace=ns_a)
+        await store.upsert([_embedded("only-b", [1.0, 0.0, 0.0, 0.0])], namespace=ns_b)
+        out_a = await store.search([1.0, 0.0, 0.0, 0.0], namespace=ns_a)
+        out_b = await store.search([1.0, 0.0, 0.0, 0.0], namespace=ns_b)
+        assert {r.chunk.content for r in out_a} == {"only-a"}
+        assert {r.chunk.content for r in out_b} == {"only-b"}
+        await store.delete_namespace(ns_a)
+        await store.delete_namespace(ns_b)
+
+    async def test_metadata_filter(self, store: PgVectorStore, ns: str) -> None:
+        a = _embedded("alpha", [1.0, 0.0, 0.0, 0.0], idx=0)
+        b = _embedded("beta", [1.0, 0.0, 0.0, 0.0], idx=1)
+        a.chunk.metadata["lang"] = "en"
+        b.chunk.metadata["lang"] = "es"
+        await store.upsert([a, b], namespace=ns)
+        out_es = await store.search([1.0, 0.0, 0.0, 0.0], namespace=ns, filter={"lang": "es"})
+        assert {r.chunk.content for r in out_es} == {"beta"}
+
+    async def test_delete_single(self, store: PgVectorStore, ns: str) -> None:
+        a = _embedded("alpha", [1.0, 0.0, 0.0, 0.0], idx=0)
+        b = _embedded("beta", [0.0, 1.0, 0.0, 0.0], idx=1)
+        await store.upsert([a, b], namespace=ns)
+        await store.delete([a.chunk.id], namespace=ns)
+        out = await store.search([1.0, 0.0, 0.0, 0.0], namespace=ns)
+        assert "alpha" not in {r.chunk.content for r in out}
+
+    async def test_idempotent_upsert(self, store: PgVectorStore, ns: str) -> None:
+        a = _embedded("alpha", [1.0, 0.0, 0.0, 0.0], idx=0)
+        await store.upsert([a, a], namespace=ns)
+        out = await store.search([1.0, 0.0, 0.0, 0.0], namespace=ns)
+        assert len([r for r in out if r.chunk.content == "alpha"]) == 1
+
+    async def test_apply_migrations_is_idempotent(self, store: PgVectorStore) -> None:
+        """Running apply_migrations twice must not error and not duplicate work."""
+        await store.apply_migrations()  # already applied by fixture; this is the 2nd run
+        async with store._pool.acquire() as conn:
+            rows = await conn.fetch("SELECT version FROM cenote_schema_migrations")
+        versions = [r["version"] for r in rows]
+        assert versions == ["001_init.sql"]
+
+    async def test_dimension_mismatch_raises_clear_error(
+        self, store: PgVectorStore, ns: str
+    ) -> None:
+        bad = _embedded("oops", [1.0, 0.0])  # store dim is 4
+        with pytest.raises(ValueError, match=r"dim .* != store dim"):
+            await store.upsert([bad], namespace=ns)
+
+    async def test_transaction_rollback_on_partial_failure(
+        self, store: PgVectorStore, ns: str
+    ) -> None:
+        """Dim mismatch caught before any SQL — nothing is inserted."""
+        good = _embedded("good", [1.0, 0.0, 0.0, 0.0], idx=0)
+        bad = _embedded("bad", [1.0, 0.0])  # dim 2 vs store dim 4
+        with pytest.raises(ValueError):
+            await store.upsert([good, bad], namespace=ns)
+        out = await store.search([1.0, 0.0, 0.0, 0.0], namespace=ns)
+        assert {r.chunk.content for r in out} == set()
