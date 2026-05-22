@@ -22,6 +22,11 @@ Versioning: [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
   `embed`/`embed_query`) and `MockEmbedder` (deterministic unit-norm vectors
   derived from content hash; matches real-embedder distribution to surface
   ranking bugs that raw Gaussian vectors would hide).
+- `cenote.embedders.cache`: `EmbeddingCache` Protocol, `InMemoryCache`
+  (dict-backed, copies on `set` to avoid poisoning), and `CachedEmbedder`
+  wrapper (slot-array preserves input order; only cache misses hit the
+  inner embedder; cache key is `(model_id, content_hash)` so different
+  models do not collide).
 
 ## [0.1.0] - YYYY-MM-DD
 
