@@ -27,6 +27,17 @@ Versioning: [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
   wrapper (slot-array preserves input order; only cache misses hit the
   inner embedder; cache key is `(model_id, content_hash)` so different
   models do not collide).
+- `cenote.embedders.voyage.VoyageEmbedder` and
+  `cenote.embedders.cohere.CohereEmbedder`: production-grade multilingual
+  embedders over Voyage AI and Cohere v2 REST APIs. Both ship with input
+  batching (Voyage ≤128/req, Cohere ≤96/req), concurrency caps via
+  `asyncio.Semaphore`, exponential-backoff retries on 429/5xx, and an
+  optional sliding-window RPM rate limiter.
+- `cenote.embedders._http`: shared `RateLimiter` (sliding window, lock-coordinated
+  across tasks) and `retrying(...)` helper.
+- Runtime dep: `httpx>=0.27`. Dev dep: `respx>=0.21` (HTTP mocking — no real
+  API calls in CI).
+- `.env.example`: template for `VOYAGE_API_KEY`, `COHERE_API_KEY`.
 
 ## [0.1.0] - YYYY-MM-DD
 
