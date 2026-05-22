@@ -43,6 +43,9 @@ Versioning: [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
   per-namespace dicts, optional metadata-filter via exact JSONB-style match).
   Production-grade backend (PgVectorStore) lands in a later task.
 - Runtime dep: `numpy>=2.0`.
+- `cenote.retrievers`: `Retriever` Protocol and `VectorRetriever` (composes
+  any `Embedder` with any `VectorStore`; embeds the query, searches the store,
+  normalizes `retriever="vector"` on every `RetrievalResult`).
 
 ## [0.1.0] - YYYY-MM-DD
 
