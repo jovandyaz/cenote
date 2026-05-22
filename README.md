@@ -1,6 +1,11 @@
 # cenote
 
-Production-grade Python framework for building agentic RAG applications, with first-class support for Spanish-language content and Latin American use cases.
+[![CI](https://github.com/jovandyaz/pycenote/actions/workflows/ci.yml/badge.svg)](https://github.com/jovandyaz/pycenote/actions/workflows/ci.yml)
+[![Python](https://img.shields.io/badge/python-3.12%20%7C%203.13-blue)](https://www.python.org/downloads/)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+
+Production-grade Python framework for building agentic RAG applications. Multilingual-capable from day 1; Spanish/LATAM-first features (Spanish-aware BM25, ES evaluation datasets, fiscal/regulatory document support) on the M1.1+ roadmap.
 
 > 🚧 **Early development.** APIs will change. Not yet on PyPI.
 
@@ -58,7 +63,7 @@ Early stage; not yet accepting external contributions. See [`CLAUDE.md`](CLAUDE.
 
 ## License
 
-TBD — likely Apache 2.0 once the public release stabilizes.
+Apache 2.0 — see [LICENSE](LICENSE).
 
 ## Author
 

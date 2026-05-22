@@ -60,6 +60,16 @@ pycenote/
 - One class per concept per file. Avoid mega-modules.
 - Async by default. Sync versions only where retrieval libraries force it.
 
+### License headers (SPDX)
+
+Every `.py` file in `src/` starts with:
+
+```python
+# SPDX-License-Identifier: Apache-2.0
+```
+
+It must be the **first non-empty line** (before the module docstring). Test files are exempt. Lint enforcement via `reuse-tool` is M1.1+; for now it's convention.
+
 ### Naming
 
 - Files and modules: `snake_case`

@@ -1,6 +1,56 @@
-# stub — replaced in Task 1
+# Python
 __pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
 .venv/
+venv/
+env/
+ENV/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
+
+# Testing
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+
+# Type checking
+.mypy_cache/
+.pyright/
+
+# Ruff
+.ruff_cache/
+
+# Environment
 .env
+.env.*
+!.env.example
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
 .DS_Store
+Thumbs.db
+
+# Claude Code local overrides (not the shared settings.json)
 .claude/settings.local.json
+.claude/cache/
+
+# Docker volumes (test pgvector data)
+.docker-volumes/
