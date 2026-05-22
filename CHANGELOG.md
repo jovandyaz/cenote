@@ -18,6 +18,10 @@ Versioning: [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
 - `cenote.chunkers`: `Chunker` Protocol (with `chunk.content` contract docstring)
   and `RecursiveCharacterChunker` (priority-list separators, configurable
   `chunk_size=512` and `chunk_overlap=50`, deep-copied metadata, unicode-safe).
+- `cenote.embedders`: `Embedder` Protocol (`model_id`, `dimensions`, async
+  `embed`/`embed_query`) and `MockEmbedder` (deterministic unit-norm vectors
+  derived from content hash; matches real-embedder distribution to surface
+  ranking bugs that raw Gaussian vectors would hide).
 
 ## [0.1.0] - YYYY-MM-DD
 
