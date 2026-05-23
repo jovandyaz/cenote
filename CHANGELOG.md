@@ -69,6 +69,13 @@ Versioning: [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
   and softened the "LATAM-rooted" claim to match what M1.0 actually ships
   (multilingual embedders today; Spanish-specific BM25 + ES eval datasets
   on the M1.1+ roadmap).
+- `cenote.rerankers.Reranker` Protocol (no impl yet — concrete
+  `VoyageReranker` / `CohereReranker` ship in M1.1).
+- `cenote.observability`: `Tracer` Protocol + `NoopTracer` default. OTel and
+  Langfuse adapters land in M1.1 without breaking the API.
+- `cenote.eval.metrics`: BEIR-style retrieval quality helpers —
+  `precision_at_k`, `recall_at_k`, `mean_reciprocal_rank`. DeepEval
+  integration arrives in M1.1.
 
 ## [0.1.0] - YYYY-MM-DD
 
