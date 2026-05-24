@@ -83,9 +83,9 @@ class TestMockEmbedder:
         out = await e.embed([_chunk("hello"), _chunk("world", 1)])
         for emb in out:
             squared_norm = sum(x * x for x in emb.embedding)
-            assert (
-                abs(squared_norm - 1.0) < 1e-9
-            ), f"vector is not unit-norm: ||v||² = {squared_norm}"
+            assert abs(squared_norm - 1.0) < 1e-9, (
+                f"vector is not unit-norm: ||v||² = {squared_norm}"
+            )
         # Queries too.
         v_q = await e.embed_query("a query")
         assert abs(sum(x * x for x in v_q) - 1.0) < 1e-9

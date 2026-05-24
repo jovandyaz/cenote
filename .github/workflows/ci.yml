@@ -49,7 +49,7 @@ jobs:
       - name: Export locked deps for pip-audit
         run: uv export --no-hashes --format requirements-txt --output-file requirements.audit.txt
       - name: Audit dependencies for known CVEs
-        run: uv tool run pip-audit --disable-pip --strict --requirement requirements.audit.txt
+        run: uv tool run pip-audit --strict --requirement requirements.audit.txt
 
   unit-tests:
     runs-on: ubuntu-latest

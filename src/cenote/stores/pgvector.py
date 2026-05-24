@@ -141,8 +141,7 @@ class PgVectorStore:
                         (id, namespace, document_id, content, position, metadata,
                          content_hash, embedding, embedding_model)
                     VALUES ($1, $2, $3, $4, $5, $6::jsonb, $7, $8::vector, $9)
-                    ON CONFLICT (id) DO UPDATE SET
-                        namespace = EXCLUDED.namespace,
+                    ON CONFLICT (namespace, id) DO UPDATE SET
                         document_id = EXCLUDED.document_id,
                         content = EXCLUDED.content,
                         position = EXCLUDED.position,
