@@ -6,12 +6,22 @@ import hashlib
 import os
 import uuid
 from collections.abc import AsyncGenerator
+from importlib import resources
 
 import pytest
 import pytest_asyncio
 
 from cenote.models import Chunk, EmbeddedChunk
 from cenote.stores import PgVectorStore
+
+
+def _expected_migrations() -> list[str]:
+    return sorted(
+        f.name
+        for f in resources.files("cenote.stores.pgvector_migrations").iterdir()
+        if f.name.endswith(".sql")
+    )
+
 
 pytestmark = pytest.mark.integration
 
@@ -107,9 +117,9 @@ class TestPgVectorStore:
         """Running apply_migrations twice must not error and not duplicate work."""
         await store.apply_migrations()  # already applied by fixture; this is the 2nd run
         async with store._pool.acquire() as conn:
-            rows = await conn.fetch("SELECT version FROM cenote_schema_migrations")
+            rows = await conn.fetch("SELECT version FROM cenote_schema_migrations ORDER BY version")
         versions = [r["version"] for r in rows]
-        assert versions == ["001_init.sql"]
+        assert versions == _expected_migrations()
 
     async def test_dimension_mismatch_raises_clear_error(
         self, store: PgVectorStore, ns: str
