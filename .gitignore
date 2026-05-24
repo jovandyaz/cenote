@@ -52,5 +52,8 @@ Thumbs.db
 .claude/settings.local.json
 .claude/cache/
 
+# Internal brainstorming specs (ephemeral artifacts; plans under docs/superpowers/plans/ remain tracked)
+docs/superpowers/
+
 # Docker volumes (test pgvector data)
 .docker-volumes/

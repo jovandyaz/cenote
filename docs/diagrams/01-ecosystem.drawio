@@ -1,0 +1,88 @@
+<mxfile host="app.diagrams.net" type="device">
+  <diagram id="ecosystem" name="cenote Ecosystem">
+    <mxGraphModel dx="1500" dy="1100" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="cenote — shared RAG core for production agentic apps" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="20" width="1200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="dev" value="Developer&#10;[Person]&#10;&#10;Builds AI apps with cenote" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#08427B;strokeColor=#073B6F;fontColor=#FFFFFF;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="120" y="90" width="80" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="enduser" value="End Users&#10;[Person]&#10;&#10;of downstream products" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#08427B;strokeColor=#073B6F;fontColor=#FFFFFF;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1400" y="90" width="80" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="cenote_boundary" value="pycenote repo (this codebase)" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;fillColor=none;strokeColor=#666666;fontColor=#333333;fontSize=14;verticalAlign=top;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="450" y="120" width="700" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="cenote" value="cenote library&#10;[Python framework]&#10;&#10;Primitives for production RAG: models, chunkers, embedders, vector stores, retrievers, future-API stubs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;strokeColor=#0E5BA6;fontColor=#FFFFFF;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="490" y="170" width="620" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="downstream_boundary" value="Downstream products (separate repos)" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;fillColor=none;strokeColor=#666666;fontColor=#333333;fontSize=14;verticalAlign=top;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="450" y="380" width="700" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="knowtis" value="knowtis-ai&#10;[Python service]&#10;&#10;RAG + research agent over Knowtis notes platform — creative synthesis use case" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;strokeColor=#0E5BA6;fontColor=#FFFFFF;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="490" y="430" width="290" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="cfdi" value="cfdi-agent&#10;[Python service]&#10;&#10;Accounting reconciliation + CFDI 4.0 compliance for Mexican PYMEs — deterministic correctness use case" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;strokeColor=#0E5BA6;fontColor=#FFFFFF;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="820" y="430" width="290" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="voyage" value="Voyage AI&#10;[REST API]&#10;&#10;Multilingual embeddings (voyage-3)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#999999;strokeColor=#6c6c6c;fontColor=#FFFFFF;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="80" y="380" width="180" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="cohere" value="Cohere&#10;[REST API]&#10;&#10;Multilingual embeddings + reranker (M1.1+)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#999999;strokeColor=#6c6c6c;fontColor=#FFFFFF;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="80" y="490" width="180" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="anthropic" value="Anthropic Claude&#10;[REST API]&#10;&#10;LLM provider — M1.1+" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#999999;strokeColor=#6c6c6c;fontColor=#FFFFFF;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="80" y="600" width="180" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="pgvector" value="Postgres + pgvector&#10;[Database]&#10;&#10;Production vector store" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#999999;strokeColor=#6c6c6c;fontColor=#FFFFFF;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1340" y="380" width="180" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="langfuse" value="Langfuse&#10;[Self-hosted]&#10;&#10;Observability — M1.1+" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#999999;strokeColor=#6c6c6c;fontColor=#FFFFFF;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1340" y="490" width="180" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="deepeval" value="DeepEval&#10;[Python lib]&#10;&#10;RAG eval framework — M1.1+" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#999999;strokeColor=#6c6c6c;fontColor=#FFFFFF;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1340" y="600" width="180" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="e_dev_cenote" value="imports + builds with" style="endArrow=classic;html=1;rounded=0;fontSize=10;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="dev" target="cenote">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_knowtis_cenote" value="depends on" style="endArrow=classic;html=1;rounded=0;fontSize=10;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="knowtis" target="cenote">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_cfdi_cenote" value="depends on" style="endArrow=classic;html=1;rounded=0;fontSize=10;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="cfdi" target="cenote">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_eu_knowtis" value="uses" style="endArrow=classic;html=1;rounded=0;fontSize=10;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="enduser" target="knowtis">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_eu_cfdi" value="uses" style="endArrow=classic;html=1;rounded=0;fontSize=10;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="enduser" target="cfdi">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_cenote_voyage" value="embeds via REST" style="endArrow=classic;html=1;rounded=0;fontSize=10;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="cenote" target="voyage">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_cenote_cohere" value="embeds via REST" style="endArrow=classic;html=1;rounded=0;fontSize=10;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="cenote" target="cohere">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_cenote_pgvector" value="stores embeddings (asyncpg)" style="endArrow=classic;html=1;rounded=0;fontSize=10;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="cenote" target="pgvector">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_cenote_anthropic" value="planned (M1.1+)" style="endArrow=classic;html=1;rounded=0;fontSize=10;labelBackgroundColor=#FFFFFF;dashed=1;strokeColor=#888888;" edge="1" parent="1" source="cenote" target="anthropic">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_cenote_langfuse" value="planned (M1.1+)" style="endArrow=classic;html=1;rounded=0;fontSize=10;labelBackgroundColor=#FFFFFF;dashed=1;strokeColor=#888888;" edge="1" parent="1" source="cenote" target="langfuse">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_cenote_deepeval" value="planned (M1.1+)" style="endArrow=classic;html=1;rounded=0;fontSize=10;labelBackgroundColor=#FFFFFF;dashed=1;strokeColor=#888888;" edge="1" parent="1" source="cenote" target="deepeval">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="legend" value="Legend&#10;&#10;Blue solid = in scope (this repo)&#10;Blue solid = downstream products&#10;Gray = external systems&#10;Dashed arrow = planned (M1.1+)" style="text;html=1;strokeColor=#cccccc;fillColor=#fafafa;align=left;verticalAlign=top;whiteSpace=wrap;rounded=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="80" y="850" width="280" height="120" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

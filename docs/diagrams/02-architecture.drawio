@@ -1,0 +1,178 @@
+<mxfile host="app.diagrams.net" type="device">
+  <diagram id="architecture" name="cenote Architecture">
+    <mxGraphModel dx="1500" dy="1100" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="cenote architecture — Protocol-based layers" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="20" width="1200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="lyr_models" value="cenote.models — Pydantic v2 (extra=forbid)" style="rounded=1;whiteSpace=wrap;html=1;dashed=0;fillColor=#fff8e1;strokeColor=#e65100;fontColor=#e65100;fontSize=12;verticalAlign=top;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="120" y="90" width="1360" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="m_doc" value="Document" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#e65100;fontColor=#e65100;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="200" y="130" width="220" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="m_ch" value="Chunk + Chunk.make_id" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#e65100;fontColor=#e65100;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="500" y="130" width="220" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="m_ec" value="EmbeddedChunk" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#e65100;fontColor=#e65100;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="900" y="130" width="220" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="m_rr" value="RetrievalResult" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#e65100;fontColor=#e65100;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="130" width="220" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="lyr_chunkers" value="cenote.chunkers" style="rounded=1;whiteSpace=wrap;html=1;dashed=0;fillColor=#fafafa;strokeColor=#666666;fontColor=#333333;fontSize=13;verticalAlign=top;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="120" y="240" width="1360" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="c_p" value="Chunker (Protocol)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1f5ff;strokeColor=#01579b;fontColor=#01579b;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="280" width="280" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="c_rcc" value="RecursiveCharacterChunker&#10;(separators, chunk_size=512)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1f8e9;strokeColor=#33691e;fontColor=#33691e;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="600" y="280" width="280" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="lyr_embedders" value="cenote.embedders" style="rounded=1;whiteSpace=wrap;html=1;dashed=0;fillColor=#fafafa;strokeColor=#666666;fontColor=#333333;fontSize=13;verticalAlign=top;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="120" y="400" width="1360" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="e_p" value="Embedder (Protocol)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1f5ff;strokeColor=#01579b;fontColor=#01579b;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="160" y="440" width="240" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="e_mock" value="MockEmbedder&#10;(deterministic, unit-norm)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1f8e9;strokeColor=#33691e;fontColor=#33691e;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="440" y="440" width="240" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="e_voy" value="VoyageEmbedder&#10;(batching ≤128, RPM)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1f8e9;strokeColor=#33691e;fontColor=#33691e;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="720" y="440" width="240" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="e_coh" value="CohereEmbedder&#10;(batching ≤96, RPM)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1f8e9;strokeColor=#33691e;fontColor=#33691e;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="440" width="240" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="e_http" value="_http: RateLimiter + retrying" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1f8e9;strokeColor=#33691e;fontColor=#33691e;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1260" y="440" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="e_cp" value="EmbeddingCache (Protocol)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1f5ff;strokeColor=#01579b;fontColor=#01579b;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="160" y="540" width="280" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="e_imc" value="InMemoryCache&#10;(dict, copy-on-set)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1f8e9;strokeColor=#33691e;fontColor=#33691e;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="480" y="540" width="240" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="e_ce" value="CachedEmbedder&#10;(wraps any Embedder, slot-array)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1f8e9;strokeColor=#33691e;fontColor=#33691e;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="760" y="540" width="280" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="lyr_stores" value="cenote.stores" style="rounded=1;whiteSpace=wrap;html=1;dashed=0;fillColor=#fafafa;strokeColor=#666666;fontColor=#333333;fontSize=13;verticalAlign=top;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="120" y="720" width="1360" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="s_p" value="VectorStore (Protocol)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1f5ff;strokeColor=#01579b;fontColor=#01579b;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="160" y="760" width="280" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="s_mem" value="InMemoryVectorStore&#10;(numpy cosine, dict per ns)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1f8e9;strokeColor=#33691e;fontColor=#33691e;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="480" y="760" width="280" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="s_pg" value="PgVectorStore&#10;(asyncpg + pgvector, HNSW)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1f8e9;strokeColor=#33691e;fontColor=#33691e;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="800" y="760" width="280" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="s_mig" value="pgvector_migrations/&#10;001_init.sql + 002_namespace_id_pk.sql" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1f8e9;strokeColor=#33691e;fontColor=#33691e;fontSize=11;dashed=0;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="760" width="320" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="lyr_retrievers" value="cenote.retrievers" style="rounded=1;whiteSpace=wrap;html=1;dashed=0;fillColor=#fafafa;strokeColor=#666666;fontColor=#333333;fontSize=13;verticalAlign=top;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="120" y="900" width="1360" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="r_p" value="Retriever (Protocol)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1f5ff;strokeColor=#01579b;fontColor=#01579b;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="940" width="280" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="r_v" value="VectorRetriever&#10;(composes Embedder + VectorStore)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1f8e9;strokeColor=#33691e;fontColor=#33691e;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="600" y="940" width="320" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="lyr_future" value="Future-API stubs (M1.0 surface, concrete impls in M1.1)" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;fillColor=#fafafa;strokeColor=#880e4f;fontColor=#880e4f;fontSize=13;verticalAlign=top;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="120" y="1060" width="1360" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="f_rer" value="Reranker (Protocol)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce4ec;strokeColor=#880e4f;fontColor=#880e4f;fontSize=11;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="1100" width="280" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="f_tr" value="Tracer (Protocol) + NoopTracer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce4ec;strokeColor=#880e4f;fontColor=#880e4f;fontSize=11;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="600" y="1100" width="320" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="f_ev" value="eval.metrics — precision/recall/MRR" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce4ec;strokeColor=#880e4f;fontColor=#880e4f;fontSize=11;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="1100" width="340" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_doc_ch" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="m_doc" target="m_ch">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_ch_ec" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="m_ch" target="m_ec">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_ec_rr" value="" style="endArrow=classic;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="m_ec" target="m_rr">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_chp_doc" value="consumes" style="endArrow=classic;html=1;rounded=0;fontSize=10;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="c_p" target="m_doc">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_chp_ch" value="produces" style="endArrow=classic;html=1;rounded=0;fontSize=10;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="c_p" target="m_ch">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_rcc_chp" value="implements" style="endArrow=open;html=1;rounded=0;fontSize=10;labelBackgroundColor=#FFFFFF;dashed=1;" edge="1" parent="1" source="c_rcc" target="c_p">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_ep_ch" value="consumes" style="endArrow=classic;html=1;rounded=0;fontSize=10;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="e_p" target="m_ch">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_ep_ec" value="produces" style="endArrow=classic;html=1;rounded=0;fontSize=10;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="e_p" target="m_ec">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_mock_ep" style="endArrow=open;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="e_mock" target="e_p">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_voy_ep" style="endArrow=open;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="e_voy" target="e_p">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_coh_ep" style="endArrow=open;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="e_coh" target="e_p">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_voy_http" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="e_voy" target="e_http">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_coh_http" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="e_coh" target="e_http">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_imc_cp" style="endArrow=open;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="e_imc" target="e_cp">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_ce_cp" value="uses" style="endArrow=classic;html=1;rounded=0;fontSize=10;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="e_ce" target="e_cp">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_ce_ep" value="wraps + implements" style="endArrow=open;html=1;rounded=0;fontSize=10;labelBackgroundColor=#FFFFFF;dashed=1;" edge="1" parent="1" source="e_ce" target="e_p">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_sp_ec" value="consumes" style="endArrow=classic;html=1;rounded=0;fontSize=10;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="s_p" target="m_ec">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_sp_rr" value="produces" style="endArrow=classic;html=1;rounded=0;fontSize=10;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="s_p" target="m_rr">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_smem_sp" style="endArrow=open;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="s_mem" target="s_p">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_spg_sp" style="endArrow=open;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="s_pg" target="s_p">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_spg_mig" value="applies" style="endArrow=classic;html=1;rounded=0;fontSize=10;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="s_pg" target="s_mig">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_rp_rr" value="produces" style="endArrow=classic;html=1;rounded=0;fontSize=10;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="r_p" target="m_rr">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_rv_rp" style="endArrow=open;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="r_v" target="r_p">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_rv_ep" value="composes" style="endArrow=classic;html=1;rounded=0;fontSize=10;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="r_v" target="e_p">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_rv_sp" value="composes" style="endArrow=classic;html=1;rounded=0;fontSize=10;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="r_v" target="s_p">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="legend" value="Legend&#10;&#10;Blue solid = Protocol (interface)&#10;Green = concrete implementation&#10;Orange = data model (Pydantic)&#10;Pink dashed = future stub (M1.0 surface, M1.1 impl)&#10;Solid arrow = consumes / produces / wraps&#10;Dashed open arrow = implements" style="text;html=1;strokeColor=#cccccc;fillColor=#fafafa;align=left;verticalAlign=top;whiteSpace=wrap;rounded=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="900" width="240" height="140" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
