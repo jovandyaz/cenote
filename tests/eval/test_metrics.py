@@ -6,6 +6,7 @@ import hashlib
 
 import pytest
 
+from cenote.errors import ConfigurationError
 from cenote.eval.metrics import mean_reciprocal_rank, precision_at_k, recall_at_k
 from cenote.models import Chunk, RetrievalResult
 
@@ -42,7 +43,7 @@ class TestPrecisionAtK:
         assert precision_at_k(results, {"d:0"}, k=10) == pytest.approx(1.0)
 
     def test_k_must_be_positive(self) -> None:
-        with pytest.raises(ValueError):
+        with pytest.raises(ConfigurationError):
             precision_at_k([], set(), k=0)
 
     def test_empty_results_returns_zero(self) -> None:
@@ -65,7 +66,7 @@ class TestRecallAtK:
         assert recall_at_k(results, set(), k=1) == 0.0
 
     def test_k_must_be_positive(self) -> None:
-        with pytest.raises(ValueError):
+        with pytest.raises(ConfigurationError):
             recall_at_k([], set(), k=0)
 
 

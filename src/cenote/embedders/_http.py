@@ -11,6 +11,8 @@ from types import TracebackType
 
 import httpx
 
+from cenote.errors import ConfigurationError, RateLimitError
+
 RETRY_STATUSES: frozenset[int] = frozenset({429, 500, 502, 503, 504})
 
 
@@ -25,7 +27,7 @@ class RateLimiter:
 
     def __init__(self, requests_per_minute: int) -> None:
         if requests_per_minute <= 0:
-            raise ValueError("requests_per_minute must be positive")
+            raise ConfigurationError("requests_per_minute must be positive")
         self._rpm = requests_per_minute
         self._window_s = 60.0
         self._timestamps: deque[float] = deque()
@@ -78,6 +80,8 @@ async def retrying(
             if exc.response.status_code not in RETRY_STATUSES:
                 raise
             if attempt == max_retries:
+                if exc.response.status_code == 429:
+                    raise RateLimitError(str(exc)) from exc
                 raise
             await asyncio.sleep(base_backoff_seconds * (2**attempt))
     assert last_exc is not None

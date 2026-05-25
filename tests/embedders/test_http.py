@@ -8,6 +8,7 @@ import time
 import pytest
 
 from cenote.embedders._http import RateLimiter
+from cenote.errors import ConfigurationError
 
 
 class TestRateLimiter:
@@ -43,7 +44,7 @@ class TestRateLimiter:
         # 5 in budget → no throttle expected; no exception is the assertion.
 
     async def test_negative_rpm_rejected(self) -> None:
-        with pytest.raises(ValueError):
+        with pytest.raises(ConfigurationError):
             RateLimiter(requests_per_minute=0)
-        with pytest.raises(ValueError):
+        with pytest.raises(ConfigurationError):
             RateLimiter(requests_per_minute=-1)

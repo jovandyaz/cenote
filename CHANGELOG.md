@@ -12,6 +12,9 @@ Versioning: [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- `cenote.errors` exception hierarchy: `CenoteError`, `ConfigurationError`,
+  `EmbeddingError`, `RateLimitError`, `VectorStoreError`, `DimensionMismatchError`,
+  `MigrationError`. Replaces bare `ValueError` raises throughout `src/cenote/`.
 - `cenote.models`: `Document`, `Chunk`, `EmbeddedChunk`, `RetrievalResult`
   Pydantic v2 models with `extra="forbid"`. `Chunk.make_id(doc_id, pos)`
   produces deterministic chunk IDs.

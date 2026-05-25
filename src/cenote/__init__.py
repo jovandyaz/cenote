@@ -8,4 +8,23 @@ try:
 except PackageNotFoundError:  # uninstalled (dev) checkout
     __version__ = "0.0.0+dev"
 
-__all__ = ["__version__"]
+from cenote.errors import (
+    CenoteError,
+    ConfigurationError,
+    DimensionMismatchError,
+    EmbeddingError,
+    MigrationError,
+    RateLimitError,
+    VectorStoreError,
+)
+
+__all__ = [
+    "CenoteError",
+    "ConfigurationError",
+    "DimensionMismatchError",
+    "EmbeddingError",
+    "MigrationError",
+    "RateLimitError",
+    "VectorStoreError",
+    "__version__",
+]

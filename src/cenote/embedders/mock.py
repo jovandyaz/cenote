@@ -7,6 +7,7 @@ import hashlib
 import math
 import random
 
+from cenote.errors import ConfigurationError
 from cenote.models import Chunk, EmbeddedChunk
 
 
@@ -15,7 +16,7 @@ class MockEmbedder:
 
     def __init__(self, dimensions: int = 1024, model_name: str = "default") -> None:
         if dimensions <= 0:
-            raise ValueError("dimensions must be positive")
+            raise ConfigurationError("dimensions must be positive")
         self._dimensions = dimensions
         self._model_name = model_name
 

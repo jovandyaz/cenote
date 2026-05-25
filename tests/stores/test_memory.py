@@ -6,6 +6,7 @@ import hashlib
 
 import pytest
 
+from cenote.errors import ConfigurationError, DimensionMismatchError
 from cenote.models import Chunk, EmbeddedChunk
 from cenote.stores import InMemoryVectorStore
 
@@ -110,9 +111,9 @@ class TestInMemoryVectorStore:
 
     async def test_dimension_mismatch_raises(self) -> None:
         store = InMemoryVectorStore(dimensions=4)
-        with pytest.raises(ValueError):
+        with pytest.raises(DimensionMismatchError):
             await store.upsert([_embedded("x", [1.0, 0.0])], namespace="ns")
-        with pytest.raises(ValueError):
+        with pytest.raises(DimensionMismatchError):
             await store.search([1.0, 0.0], namespace="ns")
 
     async def test_zero_norm_query_returns_empty(self) -> None:
@@ -134,5 +135,5 @@ class TestInMemoryVectorStore:
 
 
 def test_invalid_dimensions_raises() -> None:
-    with pytest.raises(ValueError):
+    with pytest.raises(ConfigurationError):
         InMemoryVectorStore(dimensions=0)

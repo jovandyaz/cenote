@@ -7,6 +7,7 @@ from typing import Any
 
 import numpy as np
 
+from cenote.errors import ConfigurationError, DimensionMismatchError
 from cenote.models import EmbeddedChunk, RetrievalResult
 
 
@@ -15,7 +16,7 @@ class InMemoryVectorStore:
 
     def __init__(self, dimensions: int) -> None:
         if dimensions <= 0:
-            raise ValueError("dimensions must be positive")
+            raise ConfigurationError("dimensions must be positive")
         self._dimensions = dimensions
         self._data: dict[str, dict[str, EmbeddedChunk]] = {}
 
@@ -23,7 +24,7 @@ class InMemoryVectorStore:
         bucket = self._data.setdefault(namespace, {})
         for ec in embedded_chunks:
             if len(ec.embedding) != self._dimensions:
-                raise ValueError(
+                raise DimensionMismatchError(
                     f"embedding dim {len(ec.embedding)} != store dim {self._dimensions}"
                 )
             bucket[ec.chunk.id] = ec
@@ -36,7 +37,9 @@ class InMemoryVectorStore:
         filter: dict[str, Any] | None = None,
     ) -> list[RetrievalResult]:
         if len(query_vector) != self._dimensions:
-            raise ValueError(f"query dim {len(query_vector)} != store dim {self._dimensions}")
+            raise DimensionMismatchError(
+                f"query dim {len(query_vector)} != store dim {self._dimensions}"
+            )
         bucket = self._data.get(namespace)
         if not bucket:
             return []

@@ -11,6 +11,7 @@ from importlib import resources
 import pytest
 import pytest_asyncio
 
+from cenote.errors import DimensionMismatchError
 from cenote.models import Chunk, EmbeddedChunk
 from cenote.stores import PgVectorStore
 
@@ -125,7 +126,7 @@ class TestPgVectorStore:
         self, store: PgVectorStore, ns: str
     ) -> None:
         bad = _embedded("oops", [1.0, 0.0])  # store dim is 4
-        with pytest.raises(ValueError, match=r"dim .* != store dim"):
+        with pytest.raises(DimensionMismatchError, match=r"dim .* != store dim"):
             await store.upsert([bad], namespace=ns)
 
     async def test_transaction_rollback_on_partial_failure(
@@ -134,7 +135,7 @@ class TestPgVectorStore:
         """Dim mismatch caught before any SQL — nothing is inserted."""
         good = _embedded("good", [1.0, 0.0, 0.0, 0.0], idx=0)
         bad = _embedded("bad", [1.0, 0.0])  # dim 2 vs store dim 4
-        with pytest.raises(ValueError):
+        with pytest.raises(DimensionMismatchError):
             await store.upsert([good, bad], namespace=ns)
         out = await store.search([1.0, 0.0, 0.0, 0.0], namespace=ns)
         assert {r.chunk.content for r in out} == set()

@@ -11,6 +11,7 @@ import pytest
 import respx
 
 from cenote.embedders import VoyageEmbedder
+from cenote.errors import ConfigurationError
 from cenote.models import Chunk
 
 
@@ -192,7 +193,7 @@ class TestVoyageEmbedder:
         assert peak <= 2, f"max concurrency exceeded: peak={peak}"
 
     def test_batch_size_validation(self) -> None:
-        with pytest.raises(ValueError):
+        with pytest.raises(ConfigurationError):
             VoyageEmbedder(api_key="k", batch_size=0)
-        with pytest.raises(ValueError):
+        with pytest.raises(ConfigurationError):
             VoyageEmbedder(api_key="k", batch_size=200)  # > VOYAGE_MAX_BATCH

@@ -6,6 +6,7 @@ from __future__ import annotations
 import hashlib
 from copy import deepcopy
 
+from cenote.errors import ConfigurationError
 from cenote.models import Chunk, Document
 
 DEFAULT_SEPARATORS: tuple[str, ...] = ("\n\n", "\n", ". ", " ", "")
@@ -30,11 +31,11 @@ class RecursiveCharacterChunker:
         separators: tuple[str, ...] = DEFAULT_SEPARATORS,
     ) -> None:
         if chunk_size <= 0:
-            raise ValueError("chunk_size must be positive")
+            raise ConfigurationError("chunk_size must be positive")
         if chunk_overlap < 0 or chunk_overlap >= chunk_size:
-            raise ValueError("chunk_overlap must be in [0, chunk_size)")
+            raise ConfigurationError("chunk_overlap must be in [0, chunk_size)")
         if not separators:
-            raise ValueError("separators must be non-empty")
+            raise ConfigurationError("separators must be non-empty")
         self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap
         self.separators = separators

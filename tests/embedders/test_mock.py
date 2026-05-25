@@ -7,6 +7,7 @@ import hashlib
 import pytest
 
 from cenote.embedders import MockEmbedder
+from cenote.errors import ConfigurationError
 from cenote.models import Chunk
 
 
@@ -32,9 +33,9 @@ class TestMockEmbedder:
         assert e.model_id == "mock:tiny"
 
     def test_rejects_non_positive_dimensions(self) -> None:
-        with pytest.raises(ValueError, match="dimensions must be positive"):
+        with pytest.raises(ConfigurationError, match="dimensions must be positive"):
             MockEmbedder(dimensions=0)
-        with pytest.raises(ValueError, match="dimensions must be positive"):
+        with pytest.raises(ConfigurationError, match="dimensions must be positive"):
             MockEmbedder(dimensions=-1)
 
     @pytest.mark.asyncio

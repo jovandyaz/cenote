@@ -9,6 +9,7 @@ from typing import Any
 import httpx
 
 from cenote.embedders._http import RateLimiter, retrying
+from cenote.errors import ConfigurationError
 from cenote.models import Chunk, EmbeddedChunk
 
 COHERE_BASE_URL = "https://api.cohere.com/v2/embed"
@@ -37,11 +38,11 @@ class CohereEmbedder:
         requests_per_minute: int | None = None,
     ) -> None:
         if not api_key:
-            raise ValueError("api_key is required")
+            raise ConfigurationError("api_key is required")
         if not 0 < batch_size <= COHERE_MAX_BATCH:
-            raise ValueError(f"batch_size must be in (0, {COHERE_MAX_BATCH}]")
+            raise ConfigurationError(f"batch_size must be in (0, {COHERE_MAX_BATCH}]")
         if max_concurrency <= 0:
-            raise ValueError("max_concurrency must be positive")
+            raise ConfigurationError("max_concurrency must be positive")
         self._api_key = api_key
         self._model = model
         self._dimensions = dimensions

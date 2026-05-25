@@ -11,6 +11,7 @@ from typing import Any
 
 import asyncpg
 
+from cenote.errors import ConfigurationError, DimensionMismatchError
 from cenote.models import Chunk, EmbeddedChunk, RetrievalResult
 
 logger = logging.getLogger(__name__)
@@ -34,9 +35,11 @@ class PgVectorStore:
         hnsw_ef_search: int | None = None,
     ) -> None:
         if dimensions <= 0:
-            raise ValueError("dimensions must be positive")
-        if hnsw_m <= 0 or hnsw_ef_construction <= 0:
-            raise ValueError("hnsw_m and hnsw_ef_construction must be positive")
+            raise ConfigurationError("dimensions must be positive")
+        if hnsw_m <= 0:
+            raise ConfigurationError("hnsw_m must be positive")
+        if hnsw_ef_construction <= 0:
+            raise ConfigurationError("hnsw_ef_construction must be positive")
         self._pool = pool
         self._dimensions = dimensions
         self._table = table_name
@@ -116,7 +119,7 @@ class PgVectorStore:
             return
         for ec in embedded_chunks:
             if len(ec.embedding) != self._dimensions:
-                raise ValueError(
+                raise DimensionMismatchError(
                     f"embedding dim {len(ec.embedding)} != store dim "
                     f"{self._dimensions} (chunk id={ec.chunk.id})"
                 )
@@ -161,7 +164,9 @@ class PgVectorStore:
         filter: dict[str, Any] | None = None,
     ) -> list[RetrievalResult]:
         if len(query_vector) != self._dimensions:
-            raise ValueError(f"query dim {len(query_vector)} != store dim {self._dimensions}")
+            raise DimensionMismatchError(
+                f"query dim {len(query_vector)} != store dim {self._dimensions}"
+            )
         params: list[Any] = [namespace, _vector_literal(query_vector), limit]
         filter_sql = ""
         if filter:
