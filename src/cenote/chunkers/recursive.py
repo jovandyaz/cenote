@@ -4,10 +4,13 @@
 from __future__ import annotations
 
 import hashlib
+import logging
 from copy import deepcopy
 
 from cenote.errors import ConfigurationError
 from cenote.models import Chunk, Document
+
+logger = logging.getLogger(__name__)
 
 DEFAULT_SEPARATORS: tuple[str, ...] = ("\n\n", "\n", ". ", " ", "")
 
@@ -43,9 +46,11 @@ class RecursiveCharacterChunker:
     def chunk(self, document: Document) -> list[Chunk]:
         """Return the document split into ordered Chunks."""
         if not document.content:
+            logger.debug("Empty document %s, returning no chunks", document.id)
             return []
         pieces = self._split_text(document.content, list(self.separators))
         glued = self._glue(pieces)
+        logger.debug("Chunked document %s into %d chunks", document.id, len(glued))
         return [
             Chunk(
                 id=Chunk.make_id(document.id, i),

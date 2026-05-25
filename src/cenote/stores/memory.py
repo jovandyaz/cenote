@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import logging
 from typing import Any
 
 import numpy as np
@@ -10,6 +11,8 @@ import numpy as np
 from cenote.errors import ConfigurationError, DimensionMismatchError
 from cenote.models import EmbeddedChunk, RetrievalResult
 from cenote.types import Vector
+
+logger = logging.getLogger(__name__)
 
 
 class InMemoryVectorStore:
@@ -23,6 +26,7 @@ class InMemoryVectorStore:
 
     async def upsert(self, embedded_chunks: list[EmbeddedChunk], namespace: str) -> None:
         bucket = self._data.setdefault(namespace, {})
+        logger.debug("InMemoryVectorStore.upsert: ns=%s count=%d", namespace, len(embedded_chunks))
         for ec in embedded_chunks:
             if len(ec.embedding) != self._dimensions:
                 raise DimensionMismatchError(
@@ -43,6 +47,7 @@ class InMemoryVectorStore:
             )
         bucket = self._data.get(namespace)
         if not bucket:
+            logger.debug("InMemoryVectorStore.search: ns=%s is empty", namespace)
             return []
         q = np.asarray(query_vector, dtype=np.float64)
         q_norm = float(np.linalg.norm(q))
@@ -59,6 +64,12 @@ class InMemoryVectorStore:
             score = float(np.dot(q, v) / (q_norm * v_norm))
             scored.append((score, ec))
         scored.sort(key=lambda t: t[0], reverse=True)
+        logger.debug(
+            "InMemoryVectorStore.search: ns=%s returned %d of %d candidates",
+            namespace,
+            min(len(scored), limit),
+            len(scored),
+        )
         return [
             RetrievalResult(chunk=ec.chunk, score=score, retriever="vector")
             for score, ec in scored[:limit]

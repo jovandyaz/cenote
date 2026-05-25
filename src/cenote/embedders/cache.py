@@ -3,11 +3,14 @@
 
 from __future__ import annotations
 
+import logging
 from typing import Protocol
 
 from cenote.embedders.base import Embedder
 from cenote.models import Chunk, EmbeddedChunk
 from cenote.types import Vector
+
+logger = logging.getLogger(__name__)
 
 
 class EmbeddingCache(Protocol):
@@ -69,6 +72,12 @@ class CachedEmbedder:
                 missing_idx.append(i)
                 missing_chunks.append(chunk)
 
+        logger.debug(
+            "CachedEmbedder: %d hits, %d misses (model=%s)",
+            len(chunks) - len(missing_chunks),
+            len(missing_chunks),
+            self.model_id,
+        )
         if missing_chunks:
             fresh = await self._inner.embed(missing_chunks)
             for idx, embedded in zip(missing_idx, fresh, strict=True):

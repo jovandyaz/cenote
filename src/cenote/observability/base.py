@@ -3,9 +3,12 @@
 
 from __future__ import annotations
 
+import logging
 from collections.abc import AsyncIterator
 from contextlib import AbstractAsyncContextManager, asynccontextmanager
 from typing import Any, Protocol
+
+logger = logging.getLogger(__name__)
 
 
 class Tracer(Protocol):

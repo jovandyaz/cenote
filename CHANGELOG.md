@@ -12,6 +12,9 @@ Versioning: [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Structured logging via `logging.getLogger(__name__)` in every non-trivial
+  module under `src/cenote/`. Key events emit at DEBUG; transient failures
+  (retries, rate-limit waits) emit at WARNING. No `print()` calls remain.
 - `cenote.types` module with public type aliases (`Vector`, `Namespace`,
   `ModelId`, `ContentHash`). Adopted in public signatures of `Embedder`,
   `EmbeddingCache`, `VectorStore`.

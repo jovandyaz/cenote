@@ -4,11 +4,14 @@
 from __future__ import annotations
 
 import hashlib
+import logging
 import math
 import random
 
 from cenote.errors import ConfigurationError
 from cenote.models import Chunk, EmbeddedChunk
+
+logger = logging.getLogger(__name__)
 
 
 class MockEmbedder:
@@ -29,6 +32,7 @@ class MockEmbedder:
         return self._dimensions
 
     async def embed(self, chunks: list[Chunk]) -> list[EmbeddedChunk]:
+        logger.debug("MockEmbedder embedding %d chunks", len(chunks))
         return [
             EmbeddedChunk(
                 chunk=c,

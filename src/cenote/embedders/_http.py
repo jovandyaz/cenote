@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import asyncio
+import logging
 import time
 from collections import deque
 from collections.abc import Awaitable, Callable
@@ -12,6 +13,8 @@ from types import TracebackType
 import httpx
 
 from cenote.errors import ConfigurationError, RateLimitError
+
+logger = logging.getLogger(__name__)
 
 RETRY_STATUSES: frozenset[int] = frozenset({429, 500, 502, 503, 504})
 
@@ -40,6 +43,8 @@ class RateLimiter:
                 self._timestamps.popleft()
             if len(self._timestamps) >= self._rpm:
                 wait_for = self._window_s - (now - self._timestamps[0])
+                if wait_for > 0:
+                    logger.warning("Rate limit budget exhausted, waiting %.2fs", wait_for)
                 await asyncio.sleep(max(wait_for, 0.0))
                 now = time.monotonic()
                 while self._timestamps and now - self._timestamps[0] >= self._window_s:
@@ -83,6 +88,14 @@ async def retrying(
                 if exc.response.status_code == 429:
                     raise RateLimitError(str(exc)) from exc
                 raise
-            await asyncio.sleep(base_backoff_seconds * (2**attempt))
+            backoff = base_backoff_seconds * (2**attempt)
+            logger.warning(
+                "Retrying after %s (attempt %d/%d, backoff=%.2fs)",
+                exc,
+                attempt + 1,
+                max_retries,
+                backoff,
+            )
+            await asyncio.sleep(backoff)
     assert last_exc is not None
     raise last_exc

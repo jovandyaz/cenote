@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import asyncio
+import logging
 from typing import Any
 
 import httpx
@@ -11,6 +12,8 @@ import httpx
 from cenote.embedders._http import RateLimiter, retrying
 from cenote.errors import ConfigurationError
 from cenote.models import Chunk, EmbeddedChunk
+
+logger = logging.getLogger(__name__)
 
 COHERE_BASE_URL = "https://api.cohere.com/v2/embed"
 COHERE_MAX_BATCH = 96  # v2 embed API limit for embed-multilingual-v3.0
@@ -68,6 +71,12 @@ class CohereEmbedder:
         batches = [
             chunks[i : i + self._batch_size] for i in range(0, len(chunks), self._batch_size)
         ]
+        logger.debug(
+            "CohereEmbedder dispatching %d batches (batch_size=%d) for %d chunks",
+            len(batches),
+            self._batch_size,
+            len(chunks),
+        )
         async with httpx.AsyncClient(timeout=self._timeout) as client:
             results = await asyncio.gather(*[self._embed_batch(client, batch) for batch in batches])
         return [ec for batch_result in results for ec in batch_result]
