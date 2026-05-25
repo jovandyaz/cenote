@@ -12,6 +12,8 @@ Versioning: [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- `CONTRIBUTING.md` with dev setup, test commands, code style, commit
+  conventions, and the release process via PyPI Trusted Publishing.
 - GitHub Actions release workflow with PyPI OIDC trusted publishing.
   Triggers on `v*` tag push and publishes to <https://pypi.org/project/pycenote/>.
   Requires one-time setup on PyPI to register the pending publisher.
