@@ -49,6 +49,8 @@ dev = [
     "pre-commit>=4.0",
     "respx>=0.21",
     "asyncpg-stubs>=0.31.2",
+    "mkdocs-material>=9.5",
+    "mkdocstrings-python>=1.10",
 ]
 
 [tool.ruff]

@@ -12,6 +12,14 @@ Versioning: [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Documentation site powered by `mkdocs-material` and `mkdocstrings-python`.
+  Deployed to GitHub Pages at <https://jovandyaz.github.io/pycenote/> via
+  GitHub Actions on every push to main. Includes auto-generated API
+  reference, quickstart, architecture page linking to drawio diagrams, and
+  extension tutorials for custom embedders and chunkers.
+- `mkdocs-material`, `mkdocstrings-python` added as dev dependencies.
+- Docs badge added to README. Diagrams link directly to GitHub's native
+  drawio renderer (no PNG exports needed).
 - PgVectorStore unit-level test coverage raised from 21% to ≥80% via
   `tests/stores/test_pgvector_helpers.py` (pure helpers, no Postgres
   dependency). Integration tests continue to cover the database layer.

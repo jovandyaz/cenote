@@ -1,0 +1,64 @@
+site_name: cenote
+site_description: Production-grade Python framework for building agentic RAG applications
+site_url: https://jovandyaz.github.io/pycenote/
+repo_url: https://github.com/jovandyaz/pycenote
+repo_name: jovandyaz/pycenote
+docs_dir: docs/site
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - toc.integrate
+    - content.code.copy
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: google
+            show_source: true
+            show_signature_annotations: true
+            members_order: source
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight
+  - pymdownx.tabbed:
+      alternate_style: true
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Quickstart: quickstart.md
+  - API Reference:
+      - models: api/models.md
+      - chunkers: api/chunkers.md
+      - embedders: api/embedders.md
+      - stores: api/stores.md
+      - retrievers: api/retrievers.md
+      - eval: api/eval.md
+  - Extending cenote:
+      - Custom embedder: extending/custom-embedder.md
+      - Custom chunker: extending/custom-chunker.md
+  - Architecture: architecture.md
+  - Changelog: changelog.md
