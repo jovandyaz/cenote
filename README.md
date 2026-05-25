@@ -7,88 +7,138 @@
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
-Production-grade Python framework for building agentic RAG applications. Multilingual-capable from day 1; Spanish/LATAM-first features (Spanish-aware BM25, ES evaluation datasets, fiscal/regulatory document support) on the M1.1+ roadmap.
+Production-grade RAG primitives for Python — Protocol-based, multi-tenant by design, type-strict from day one. Targeting Spanish/LATAM workloads from M1.1.
 
-> 🚧 **Early development.** APIs will change. Not yet on PyPI.
+## Why cenote
 
-## What it is
+cenote is **not** a LangChain alternative. LangChain is a kitchen-sink framework with ~100k stars and a full-time team. cenote is the opposite: a small, opinionated set of primitives for teams that hit framework complexity ceilings.
 
-`cenote` provides the building blocks for retrieval-augmented generation and agentic systems that need to ship to production: chunkers, embedders, vector stores, retrievers, rerankers, agent primitives, evaluation harnesses, and observability helpers.
-
-Opinionated stack: Python 3.12+, Anthropic Claude, LangGraph, pgvector, Pydantic, Langfuse, DeepEval.
-
-## Why
-
-Most RAG frameworks are prototype-grade. `cenote` is built around three principles:
-
-1. **Production-first** — eval, observability, audit trails built-in, not afterthoughts
-2. **Opinionated** — one good stack, not twenty mediocre adapters
-3. **Multilingual now, LATAM-focused next** — production embedders from Voyage AI and Cohere are multilingual out of the box; Spanish-specific tokenization, evaluation datasets, and Mexican fiscal/regulatory features land in M1.1+
+- **Production minimalist** — clear `Protocol` interfaces, composition over inheritance, engineering hardenings (batching, rate limiting, transactional upserts) built in.
+- **Type-strict** — `mypy --strict` clean. `py.typed` shipped. Your IDE catches wiring errors before runtime.
+- **Multi-tenant by design** — `namespace` is mandatory on every store and retriever method. Cross-tenant leakage is impossible by construction.
+- **LATAM-first roadmap** — Spanish-aware BM25, ES evaluation datasets, fiscal/regulatory document support land in M1.1+. Multilingual embedders (Voyage, Cohere) already work today.
 
 The name comes from cenotes — natural deep wells in the Yucatán Peninsula used by the Maya as sacred sources of fresh water and knowledge. The metaphor maps to RAG: a deep, structured source of knowledge from which you retrieve context.
 
 ## Status
 
-| Module | Status |
-|---|---|
-| chunkers | 🚧 in progress |
-| embedders | 🚧 in progress |
-| stores | 🚧 in progress |
-| retrievers | 🚧 in progress |
-| rerankers | ⏳ planned |
-| llm | ⏳ planned |
-| agents | ⏳ planned |
-| eval | ⏳ planned |
-| observability | ⏳ planned |
-
-See [`docs/00-first-milestone.md`](docs/00-first-milestone.md) for the current milestone scope.
+| Module | M1.0 (released) | M1.1+ (planned) |
+|---|---|---|
+| `cenote.models` | ✓ Document, Chunk, EmbeddedChunk, RetrievalResult | — |
+| `cenote.errors` | ✓ CenoteError hierarchy | — |
+| `cenote.types` | ✓ Vector, Namespace, ModelId, ContentHash | — |
+| `cenote.chunkers` | ✓ Chunker Protocol, RecursiveCharacterChunker | MarkdownChunker, token-aware chunking |
+| `cenote.embedders` | ✓ Embedder Protocol, MockEmbedder, VoyageEmbedder, CohereEmbedder, EmbeddingCache, InMemoryCache, CachedEmbedder | Streaming embed, SqliteCache, RedisCache |
+| `cenote.stores` | ✓ VectorStore Protocol, InMemoryVectorStore, PgVectorStore | — |
+| `cenote.retrievers` | ✓ Retriever Protocol, VectorRetriever | BM25Retriever, HybridRetriever (RRF), Spanish-aware tokenizer |
+| `cenote.rerankers` | ✓ Reranker Protocol (no impl) | VoyageReranker, CohereReranker |
+| `cenote.observability` | ✓ Tracer Protocol, NoopTracer | OTel adapter, Langfuse adapter |
+| `cenote.eval` | ✓ precision_at_k, recall_at_k, mean_reciprocal_rank | DeepEval integration, bilingual EN/ES dataset |
+| `cenote.llm` | — | Anthropic Claude wrapper with prompt-cache awareness |
 
 ## Quickstart
 
 ```bash
-git clone https://github.com/jovandyaz/pycenote.git
-cd pycenote
-uv sync
-
-# Option 1 — run the demo with MockEmbedder (no API key)
-uv run python demos/quickstart.py --provider mock
-
-# Option 2 — run with Voyage AI (requires VOYAGE_API_KEY)
-export VOYAGE_API_KEY=...
-uv run python demos/quickstart.py --provider voyage
-
-# Option 3 — run with Cohere multilingual (requires COHERE_API_KEY)
-export COHERE_API_KEY=...
-uv run python demos/quickstart.py --provider cohere
+pip install pycenote
 ```
 
-Sample output:
+```python
+import asyncio
+from cenote.chunkers import RecursiveCharacterChunker
+from cenote.embedders import MockEmbedder
+from cenote.models import Document
+from cenote.retrievers import VectorRetriever
+from cenote.stores import InMemoryVectorStore
 
-```text
-=== Query: What is a cenote?
-  1. [score=0.812] (Cenote) A cenote is a natural sinkhole that exposes groundwater beneath a limestone surface. Found mostly in the Yucatán Peninsul...
-  2. [score=0.563] (Yucatán Peninsula) The Yucatán Peninsula is a landmass in southeastern Mexico and northern Central America. It is known for its ...
 
-=== Query: What does RRF stand for?
-  1. [score=0.798] (Reciprocal Rank Fusion) Reciprocal Rank Fusion (RRF) is a rank aggregation method that combines results from multiple ranked list...
-  2. [score=0.541] (Hybrid search) Hybrid search combines sparse retrieval (e.g., BM25) with dense retrieval (vector search) to leverage the strengths...
+async def main() -> None:
+    chunker = RecursiveCharacterChunker(chunk_size=512, chunk_overlap=64)
+    embedder = MockEmbedder(dimensions=128)
+    store = InMemoryVectorStore(dimensions=128)
+    retriever = VectorRetriever(embedder=embedder, store=store)
+
+    doc = Document(id="d1", content="Cenotes are natural sinkholes in the Yucatán Peninsula.")
+    chunks = chunker.chunk(doc)
+    embedded = await embedder.embed(chunks)
+    await store.upsert(embedded, namespace="quickstart")
+
+    results = await retriever.retrieve("What is a cenote?", namespace="quickstart", limit=3)
+    for r in results:
+        print(f"[{r.score:.3f}] {r.chunk.content}")
+
+
+asyncio.run(main())
 ```
+
+For real semantic retrieval, swap `MockEmbedder` for `VoyageEmbedder(api_key=..., model="voyage-3")` or `CohereEmbedder(api_key=..., model="embed-multilingual-v3.0")`. For production storage, `PgVectorStore.connect(dsn, dimensions=...)`.
+
+→ Full quickstart: <https://jovandyaz.github.io/pycenote/quickstart/>
+
+## Extending cenote
+
+Every primitive is a `typing.Protocol` — implement the interface and plug it in. No inheritance required.
+
+```python
+from cenote.models import Chunk, EmbeddedChunk
+from cenote.types import Vector
+
+
+class MyEmbedder:
+    """Satisfies the Embedder protocol via structural typing."""
+
+    @property
+    def model_id(self) -> str:
+        return "my-provider:my-model"
+
+    @property
+    def dimensions(self) -> int:
+        return 768
+
+    async def embed(self, chunks: list[Chunk]) -> list[EmbeddedChunk]:
+        ...
+
+    async def embed_query(self, query: str) -> Vector:
+        ...
+```
+
+→ Full example: [examples/custom_embedder.py](examples/custom_embedder.py)
+→ Custom chunker: <https://jovandyaz.github.io/pycenote/extending/custom-chunker/>
+
+## Architecture
+
+Three diagrams document the system at different zoom levels:
+
+- [**Ecosystem**](docs/diagrams/01-ecosystem.drawio) — cenote's position in the wider RAG ecosystem
+- [**Internal architecture**](docs/diagrams/02-architecture.drawio) — 5 layers + future-API stubs
+- [**Runtime flow**](docs/diagrams/03-runtime-flow.drawio) — indexing path and query path sequence
+
+GitHub renders `.drawio` files inline natively (since 2024). Click any link above to view.
+
+→ Full architecture page: <https://jovandyaz.github.io/pycenote/architecture/>
+
+## Roadmap
+
+- ✅ **M1.0** (released as v0.1.0) — Core primitives: chunker, embedders, stores, retrievers, future-API stubs
+- 🚧 **M1.1** — MarkdownChunker, BM25 + Hybrid retrievers, Spanish-aware tokenizer, concrete rerankers, DeepEval integration
+- 📋 **M1.2+** — OTel/Langfuse adapters, LLM client (Anthropic Claude with prompt caching), agent primitives, CFDI domain pack
+
+See [CHANGELOG.md](CHANGELOG.md) for a granular record of what shipped when.
 
 ## Downstream products
 
-`cenote` is the shared core for two products in development:
+cenote is the shared core for two products in development:
 
-- **knowtis-ai** — RAG and research agent for the [Knowtis](https://knowtis.ai) notes platform
-- **cfdi-agent** — accounting reconciliation + CFDI 4.0 compliance agent for Mexican PYMEs
+- **knowtis-ai** — RAG + research agent over the Knowtis notes platform
+- **cfdi-agent** — Accounting reconciliation + CFDI 4.0 compliance for Mexican PYMEs
 
-## Contributing
-
-Early stage; not yet accepting external contributions. See [`CLAUDE.md`](CLAUDE.md) for conventions.
+Each downstream product validates cenote from opposite ends: knowtis-ai favors creative synthesis, cfdi-agent demands deterministic correctness with audit trails.
 
 ## License
 
-Apache 2.0 — see [LICENSE](LICENSE).
+[Apache 2.0](LICENSE).
 
 ## Author
 
 Jovan Díaz — [github.com/jovandyaz](https://github.com/jovandyaz)
+
+Contributions: see [CONTRIBUTING.md](CONTRIBUTING.md). Security: see [SECURITY.md](SECURITY.md).
