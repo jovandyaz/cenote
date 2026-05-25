@@ -12,6 +12,9 @@ Versioning: [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- GitHub Actions release workflow with PyPI OIDC trusted publishing.
+  Triggers on `v*` tag push and publishes to <https://pypi.org/project/pycenote/>.
+  Requires one-time setup on PyPI to register the pending publisher.
 - Cookbook: `examples/custom_embedder.py` (structural-typing demo — implement
   the `Embedder` protocol without inheritance) and `examples/pgvector_setup.py`
   (production PgVectorStore — connect with retry, apply migrations,
