@@ -13,6 +13,7 @@ import asyncpg
 
 from cenote.errors import ConfigurationError, DimensionMismatchError
 from cenote.models import Chunk, EmbeddedChunk, RetrievalResult
+from cenote.types import Vector
 
 logger = logging.getLogger(__name__)
 
@@ -158,7 +159,7 @@ class PgVectorStore:
 
     async def search(
         self,
-        query_vector: list[float],
+        query_vector: Vector,
         namespace: str,
         limit: int = 10,
         filter: dict[str, Any] | None = None,

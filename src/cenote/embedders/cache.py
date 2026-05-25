@@ -7,26 +7,27 @@ from typing import Protocol
 
 from cenote.embedders.base import Embedder
 from cenote.models import Chunk, EmbeddedChunk
+from cenote.types import Vector
 
 
 class EmbeddingCache(Protocol):
     """Async key-value store for embedding vectors, keyed by (model_id, content_hash)."""
 
-    async def get(self, model_id: str, content_hash: str) -> list[float] | None: ...
+    async def get(self, model_id: str, content_hash: str) -> Vector | None: ...
 
-    async def set(self, model_id: str, content_hash: str, embedding: list[float]) -> None: ...
+    async def set(self, model_id: str, content_hash: str, embedding: Vector) -> None: ...
 
 
 class InMemoryCache:
     """Dict-backed EmbeddingCache. Suitable for tests and small workloads."""
 
     def __init__(self) -> None:
-        self._store: dict[tuple[str, str], list[float]] = {}
+        self._store: dict[tuple[str, str], Vector] = {}
 
-    async def get(self, model_id: str, content_hash: str) -> list[float] | None:
+    async def get(self, model_id: str, content_hash: str) -> Vector | None:
         return self._store.get((model_id, content_hash))
 
-    async def set(self, model_id: str, content_hash: str, embedding: list[float]) -> None:
+    async def set(self, model_id: str, content_hash: str, embedding: Vector) -> None:
         # Store a copy so external mutation of the caller's list cannot poison the cache.
         self._store[(model_id, content_hash)] = list(embedding)
 

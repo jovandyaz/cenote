@@ -6,6 +6,7 @@ from __future__ import annotations
 from typing import Any, Protocol
 
 from cenote.models import EmbeddedChunk, RetrievalResult
+from cenote.types import Vector
 
 
 class VectorStore(Protocol):
@@ -19,7 +20,7 @@ class VectorStore(Protocol):
 
     async def search(
         self,
-        query_vector: list[float],
+        query_vector: Vector,
         namespace: str,
         limit: int = 10,
         filter: dict[str, Any] | None = None,

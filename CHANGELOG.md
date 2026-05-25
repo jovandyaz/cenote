@@ -12,6 +12,9 @@ Versioning: [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- `cenote.types` module with public type aliases (`Vector`, `Namespace`,
+  `ModelId`, `ContentHash`). Adopted in public signatures of `Embedder`,
+  `EmbeddingCache`, `VectorStore`.
 - `cenote.errors` exception hierarchy: `CenoteError`, `ConfigurationError`,
   `EmbeddingError`, `RateLimitError`, `VectorStoreError`, `DimensionMismatchError`,
   `MigrationError`. Replaces bare `ValueError` raises throughout `src/cenote/`.

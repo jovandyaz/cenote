@@ -17,14 +17,19 @@ from cenote.errors import (
     RateLimitError,
     VectorStoreError,
 )
+from cenote.types import ContentHash, ModelId, Namespace, Vector
 
 __all__ = [
     "CenoteError",
     "ConfigurationError",
+    "ContentHash",
     "DimensionMismatchError",
     "EmbeddingError",
     "MigrationError",
+    "ModelId",
+    "Namespace",
     "RateLimitError",
+    "Vector",
     "VectorStoreError",
     "__version__",
 ]
