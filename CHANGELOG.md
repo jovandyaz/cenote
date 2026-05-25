@@ -12,6 +12,12 @@ Versioning: [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- (none yet)
+
+## [0.1.0] - 2026-05-25
+
+### Added
+
 - `CONTRIBUTING.md` with dev setup, test commands, code style, commit
   conventions, and the release process via PyPI Trusted Publishing.
 - Full README rewrite with new positioning ("not a LangChain alternative —
@@ -113,11 +119,6 @@ Versioning: [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
 - `cenote.eval.metrics`: BEIR-style retrieval quality helpers —
   `precision_at_k`, `recall_at_k`, `mean_reciprocal_rank`. DeepEval
   integration arrives in M1.1.
-
-## [0.1.0] - YYYY-MM-DD
-
-### Added
-
 - Initial project scaffolding: `uv`, `ruff`, `mypy --strict`, `pytest`, `pre-commit`,
   GitHub Actions CI (lint + type + unit tests, Python 3.12 & 3.13, `pip-audit`).
 - `LICENSE` (Apache 2.0), `CHANGELOG.md`, `SECURITY.md`.
