@@ -12,6 +12,11 @@ Versioning: [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Cookbook: `examples/custom_embedder.py` (structural-typing demo — implement
+  the `Embedder` protocol without inheritance) and `examples/pgvector_setup.py`
+  (production PgVectorStore — connect with retry, apply migrations,
+  multi-tenant indexing, namespace isolation verification).
+- `examples` added to ruff src list.
 - Documentation site powered by `mkdocs-material` and `mkdocstrings-python`.
   Deployed to GitHub Pages at <https://jovandyaz.github.io/pycenote/> via
   GitHub Actions on every push to main. Includes auto-generated API
