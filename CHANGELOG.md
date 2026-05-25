@@ -12,6 +12,11 @@ Versioning: [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- PgVectorStore unit-level test coverage raised from 21% to ≥80% via
+  `tests/stores/test_pgvector_helpers.py` (pure helpers, no Postgres
+  dependency). Integration tests continue to cover the database layer.
+- Codecov integration: CI uploads `coverage.xml` to Codecov on every push
+  to main; coverage badge added to README. Requires `CODECOV_TOKEN` secret.
 - Structured logging via `logging.getLogger(__name__)` in every non-trivial
   module under `src/cenote/`. Key events emit at DEBUG; transient failures
   (retries, rate-limit waits) emit at WARNING. No `print()` calls remain.

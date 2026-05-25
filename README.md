@@ -1,6 +1,7 @@
 # cenote
 
 [![CI](https://github.com/jovandyaz/pycenote/actions/workflows/ci.yml/badge.svg)](https://github.com/jovandyaz/pycenote/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/jovandyaz/pycenote/branch/main/graph/badge.svg)](https://codecov.io/gh/jovandyaz/pycenote)
 [![Python](https://img.shields.io/badge/python-3.12%20%7C%203.13-blue)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
