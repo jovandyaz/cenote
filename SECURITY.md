@@ -9,7 +9,7 @@
 ## Reporting a Vulnerability
 
 Please report security vulnerabilities via GitHub's [private vulnerability
-reporting](https://github.com/jovandyaz/pycenote/security/advisories/new), or
+reporting](https://github.com/jovandyaz/cenote/security/advisories/new), or
 by email to <jvaonam@me.com>. Do not file public GitHub issues for security
 issues.
 

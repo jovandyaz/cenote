@@ -46,7 +46,7 @@ jobs:
         run: uv python install 3.12
       - name: Install deps (locked)
         run: uv sync --all-extras --locked
-      - name: Export locked deps for pip-audit (excluding pycenote — unpublished)
+      - name: Export locked deps for pip-audit (excluding cenote-core itself)
         run: |
           uv export --no-hashes --no-emit-project --format requirements-txt \
             --output-file requirements.audit.txt

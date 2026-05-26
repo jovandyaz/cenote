@@ -4,7 +4,7 @@
 from importlib.metadata import PackageNotFoundError, version
 
 try:
-    __version__: str = version("pycenote")
+    __version__: str = version("cenote-core")
 except PackageNotFoundError:  # uninstalled (dev) checkout
     __version__ = "0.0.0+dev"
 

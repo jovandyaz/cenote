@@ -13,7 +13,7 @@
         <mxCell id="enduser" value="End Users&#10;[Person]&#10;&#10;of downstream products" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#08427B;strokeColor=#073B6F;fontColor=#FFFFFF;fontSize=12;" vertex="1" parent="1">
           <mxGeometry x="1400" y="90" width="80" height="160" as="geometry" />
         </mxCell>
-        <mxCell id="cenote_boundary" value="pycenote repo (this codebase)" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;fillColor=none;strokeColor=#666666;fontColor=#333333;fontSize=14;verticalAlign=top;fontStyle=1;" vertex="1" parent="1">
+        <mxCell id="cenote_boundary" value="cenote repo (this codebase)" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;fillColor=none;strokeColor=#666666;fontColor=#333333;fontSize=14;verticalAlign=top;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="450" y="120" width="700" height="180" as="geometry" />
         </mxCell>
         <mxCell id="cenote" value="cenote library&#10;[Python framework]&#10;&#10;Primitives for production RAG: models, chunkers, embedders, vector stores, retrievers, future-API stubs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;strokeColor=#0E5BA6;fontColor=#FFFFFF;fontSize=12;" vertex="1" parent="1">

@@ -1,3 +1,3 @@
 # Changelog
 
-See [CHANGELOG.md on GitHub](https://github.com/jovandyaz/pycenote/blob/main/CHANGELOG.md) for the full history.
+See [CHANGELOG.md on GitHub](https://github.com/jovandyaz/cenote/blob/main/CHANGELOG.md) for the full history.

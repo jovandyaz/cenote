@@ -1,5 +1,5 @@
 [project]
-name = "pycenote"
+name = "cenote-core"
 version = "0.1.0"
 description = "Production-grade Python framework for building agentic RAG applications. Multilingual-capable with a roadmap toward Spanish/LATAM-first features."
 readme = "README.md"
@@ -25,10 +25,10 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/jovandyaz/pycenote"
-Repository = "https://github.com/jovandyaz/pycenote"
-Issues = "https://github.com/jovandyaz/pycenote/issues"
-Changelog = "https://github.com/jovandyaz/pycenote/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/jovandyaz/cenote"
+Repository = "https://github.com/jovandyaz/cenote"
+Issues = "https://github.com/jovandyaz/cenote/issues"
+Changelog = "https://github.com/jovandyaz/cenote/blob/main/CHANGELOG.md"
 
 [build-system]
 requires = ["hatchling"]

@@ -1,8 +1,8 @@
 # cenote
 
-[![CI](https://github.com/jovandyaz/pycenote/actions/workflows/ci.yml/badge.svg)](https://github.com/jovandyaz/pycenote/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/jovandyaz/pycenote/branch/main/graph/badge.svg)](https://codecov.io/gh/jovandyaz/pycenote)
-[![Docs](https://img.shields.io/badge/docs-mkdocs--material-blue)](https://jovandyaz.github.io/pycenote/)
+[![CI](https://github.com/jovandyaz/cenote/actions/workflows/ci.yml/badge.svg)](https://github.com/jovandyaz/cenote/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/jovandyaz/cenote/branch/main/graph/badge.svg)](https://codecov.io/gh/jovandyaz/cenote)
+[![Docs](https://img.shields.io/badge/docs-mkdocs--material-blue)](https://jovandyaz.github.io/cenote/)
 [![Python](https://img.shields.io/badge/python-3.12%20%7C%203.13-blue)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
@@ -39,7 +39,7 @@ The name comes from cenotes — natural deep wells in the Yucatán Peninsula use
 ## Quickstart
 
 ```bash
-pip install pycenote
+pip install cenote-core
 ```
 
 ```python
@@ -72,7 +72,7 @@ asyncio.run(main())
 
 For real semantic retrieval, swap `MockEmbedder` for `VoyageEmbedder(api_key=..., model="voyage-3")` or `CohereEmbedder(api_key=..., model="embed-multilingual-v3.0")`. For production storage, `PgVectorStore.connect(dsn, dimensions=...)`.
 
-→ Full quickstart: <https://jovandyaz.github.io/pycenote/quickstart/>
+→ Full quickstart: <https://jovandyaz.github.io/cenote/quickstart/>
 
 ## Extending cenote
 
@@ -102,7 +102,7 @@ class MyEmbedder:
 ```
 
 → Full example: [examples/custom_embedder.py](examples/custom_embedder.py)
-→ Custom chunker: <https://jovandyaz.github.io/pycenote/extending/custom-chunker/>
+→ Custom chunker: <https://jovandyaz.github.io/cenote/extending/custom-chunker/>
 
 ## Architecture
 
@@ -114,7 +114,7 @@ Three diagrams document the system at different zoom levels:
 
 GitHub renders `.drawio` files inline natively (since 2024). Click any link above to view.
 
-→ Full architecture page: <https://jovandyaz.github.io/pycenote/architecture/>
+→ Full architecture page: <https://jovandyaz.github.io/cenote/architecture/>
 
 ## Roadmap
 

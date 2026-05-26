@@ -25,4 +25,4 @@ Most RAG frameworks are kitchen-sink — they ship 100+ integrations, every embe
 
 ## License
 
-[Apache 2.0](https://github.com/jovandyaz/pycenote/blob/main/LICENSE).
+[Apache 2.0](https://github.com/jovandyaz/cenote/blob/main/LICENSE).

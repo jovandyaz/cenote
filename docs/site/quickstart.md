@@ -1,13 +1,13 @@
 # Quickstart
 
-This guide takes you from `pip install pycenote` to a working semantic search in under 5 minutes.
+This guide takes you from `pip install cenote-core` to a working semantic search in under 5 minutes.
 
 ## Install
 
 ```bash
-pip install pycenote
+pip install cenote-core
 # or
-uv add pycenote
+uv add cenote-core
 ```
 
 ## Index and retrieve
@@ -75,7 +75,7 @@ store = await PgVectorStore.connect(
 await store.apply_migrations()
 ```
 
-See [examples/pgvector_setup.py](https://github.com/jovandyaz/pycenote/blob/main/examples/pgvector_setup.py) for a complete production setup.
+See [examples/pgvector_setup.py](https://github.com/jovandyaz/cenote/blob/main/examples/pgvector_setup.py) for a complete production setup.
 
 ## Next steps
 

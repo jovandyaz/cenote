@@ -16,8 +16,8 @@ If you're not sure whether a change aligns with these goals, open an issue first
 Prerequisites: Python 3.12 or 3.13, [uv](https://docs.astral.sh/uv/) 0.5+.
 
 ```bash
-git clone https://github.com/jovandyaz/pycenote.git
-cd pycenote
+git clone https://github.com/jovandyaz/cenote.git
+cd cenote
 uv sync --all-extras
 uv run pre-commit install
 ```
@@ -76,9 +76,9 @@ git tag -a v0.1.0 -m "First public release"
 git push --tags
 ```
 
-The workflow builds wheel + sdist, verifies the import works, and publishes to <https://pypi.org/project/pycenote/>. No API tokens needed — OIDC trust is established via the pending publisher registration on PyPI (one-time setup at <https://pypi.org/manage/account/publishing/>).
+The workflow builds wheel + sdist, verifies the import works, and publishes to <https://pypi.org/project/cenote-core/>. No API tokens needed — OIDC trust is established via the pending publisher registration on PyPI (one-time setup at <https://pypi.org/manage/account/publishing/>).
 
 ## Where to ask questions
 
-- Bugs / feature requests: <https://github.com/jovandyaz/pycenote/issues>
+- Bugs / feature requests: <https://github.com/jovandyaz/cenote/issues>
 - Security: see [SECURITY.md](SECURITY.md)

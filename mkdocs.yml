@@ -1,8 +1,8 @@
 site_name: cenote
 site_description: Production-grade Python framework for building agentic RAG applications
-site_url: https://jovandyaz.github.io/pycenote/
-repo_url: https://github.com/jovandyaz/pycenote
-repo_name: jovandyaz/pycenote
+site_url: https://jovandyaz.github.io/cenote/
+repo_url: https://github.com/jovandyaz/cenote
+repo_name: jovandyaz/cenote
 docs_dir: docs/site
 
 theme:

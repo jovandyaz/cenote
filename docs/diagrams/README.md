@@ -4,7 +4,7 @@ Native drawio (`.drawio`) XML files. Upload directly at <https://app.diagrams.ne
 
 | File | What it shows |
 |---|---|
-| `01-ecosystem.drawio` | C4-style ecosystem map — pycenote as the shared core, downstream products (knowtis-ai, cfdi-agent), end users, external integrations (Voyage / Cohere / pgvector today; Anthropic / Langfuse / DeepEval planned M1.1+). |
+| `01-ecosystem.drawio` | C4-style ecosystem map — cenote-core as the shared library, downstream products (knowtis-ai, cfdi-agent), end users, external integrations (Voyage / Cohere / pgvector today; Anthropic / Langfuse / DeepEval planned M1.1+). |
 | `02-architecture.drawio` | Internal architecture — 5 layers (models, chunkers, embedders, stores, retrievers) plus M1.0 future-API stubs. Color-coded: blue = Protocol, green = impl, orange = data model, pink dashed = future stub. |
 | `03-runtime-flow.drawio` | Sequence diagram of indexing path (green) and query path (blue), with batching, rate limiting, transactional upsert, and HNSW tuning visible. |
 

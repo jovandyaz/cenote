@@ -6,9 +6,9 @@ cenote is layered around three protocols and a small set of value types. The lay
 
 Three diagrams document the system at different zoom levels:
 
-- [**Ecosystem**](https://github.com/jovandyaz/pycenote/blob/main/docs/diagrams/01-ecosystem.drawio) — cenote's position in the wider RAG ecosystem (LangChain, LlamaIndex, vector DBs, embedding providers).
-- [**Internal architecture**](https://github.com/jovandyaz/pycenote/blob/main/docs/diagrams/02-architecture.drawio) — the 5 layers (`models`, `chunkers`, `embedders`, `stores`, `retrievers`) + future-API stubs, with Protocol vs implementation vs data model distinguished.
-- [**Runtime flow**](https://github.com/jovandyaz/pycenote/blob/main/docs/diagrams/03-runtime-flow.drawio) — sequence diagram of the indexing path and query path, showing batching, rate limiting, transactions, and HNSW tuning.
+- [**Ecosystem**](https://github.com/jovandyaz/cenote/blob/main/docs/diagrams/01-ecosystem.drawio) — cenote's position in the wider RAG ecosystem (LangChain, LlamaIndex, vector DBs, embedding providers).
+- [**Internal architecture**](https://github.com/jovandyaz/cenote/blob/main/docs/diagrams/02-architecture.drawio) — the 5 layers (`models`, `chunkers`, `embedders`, `stores`, `retrievers`) + future-API stubs, with Protocol vs implementation vs data model distinguished.
+- [**Runtime flow**](https://github.com/jovandyaz/cenote/blob/main/docs/diagrams/03-runtime-flow.drawio) — sequence diagram of the indexing path and query path, showing batching, rate limiting, transactions, and HNSW tuning.
 
 GitHub renders `.drawio` files inline natively (since 2024). Click any link above to view.
 

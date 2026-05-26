@@ -18,6 +18,12 @@ Versioning: [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- PyPI package name: `cenote-core` (aligns with `langchain-core`,
+  `llama-index-core`, `pydantic-core` ecosystem patterns). Import remains
+  `import cenote` (Pillow/scikit-learn precedent — distribution name and
+  import name need not match).
+- GitHub repo renamed `pycenote` → `cenote` (brand umbrella; GitHub
+  auto-redirects old URLs).
 - `CONTRIBUTING.md` with dev setup, test commands, code style, commit
   conventions, and the release process via PyPI Trusted Publishing.
 - Full README rewrite with new positioning ("not a LangChain alternative —
@@ -26,7 +32,7 @@ Versioning: [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
   extension example with structural-typing pattern, architecture section
   with diagram links, and roadmap with realistic M1.0/M1.1/M1.2+ scope.
 - GitHub Actions release workflow with PyPI OIDC trusted publishing.
-  Triggers on `v*` tag push and publishes to <https://pypi.org/project/pycenote/>.
+  Triggers on `v*` tag push and publishes to <https://pypi.org/project/cenote-core/>.
   Requires one-time setup on PyPI to register the pending publisher.
 - Cookbook: `examples/custom_embedder.py` (structural-typing demo — implement
   the `Embedder` protocol without inheritance) and `examples/pgvector_setup.py`
@@ -34,7 +40,7 @@ Versioning: [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
   multi-tenant indexing, namespace isolation verification).
 - `examples` added to ruff src list.
 - Documentation site powered by `mkdocs-material` and `mkdocstrings-python`.
-  Deployed to GitHub Pages at <https://jovandyaz.github.io/pycenote/> via
+  Deployed to GitHub Pages at <https://jovandyaz.github.io/cenote/> via
   GitHub Actions on every push to main. Includes auto-generated API
   reference, quickstart, architecture page linking to drawio diagrams, and
   extension tutorials for custom embedders and chunkers.

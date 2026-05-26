@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/p/pycenote
+      url: https://pypi.org/p/cenote-core
     steps:
       - uses: actions/checkout@v6
       - uses: astral-sh/setup-uv@v7
@@ -26,7 +26,7 @@ jobs:
         run: uv build
       - name: Verify build
         run: |
-          uv pip install --system dist/pycenote-*.whl
+          uv pip install --system dist/cenote_core-*.whl
           python -c "import cenote; print(cenote.__version__)"
       - name: Publish to PyPI via Trusted Publishing
         uses: pypa/gh-action-pypi-publish@release/v1

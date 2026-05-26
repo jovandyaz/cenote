@@ -8,7 +8,7 @@ Implement the `Embedder` protocol from scratch — no inheritance required. Any 
 
 ## Minimal example
 
-The full source is in [examples/custom_embedder.py](https://github.com/jovandyaz/pycenote/blob/main/examples/custom_embedder.py).
+The full source is in [examples/custom_embedder.py](https://github.com/jovandyaz/cenote/blob/main/examples/custom_embedder.py).
 
 ```python
 import hashlib

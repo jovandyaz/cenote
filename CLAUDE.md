@@ -11,7 +11,7 @@ This file is the persistent context for Claude Code sessions working on `cenote`
 
 Each downstream product validates the core from opposite ends: knowtis-ai needs creative synthesis, cfdi-agent needs deterministic correctness with audit trails. If the core serves both, it serves most production RAG verticals.
 
-This repo (`pycenote`) contains the core library only. PyPI publication name will be `cenote-ai` (the bare `cenote` slot is occupied by an abandoned 2019 project).
+This repo (`cenote`) contains the core library only. PyPI publication name is `cenote-core` — aligned with `langchain-core` / `llama-index-core` / `pydantic-core` patterns. Import remains `import cenote` (Pillow/scikit-learn precedent: distribution name and import name need not match). The bare `cenote` PyPI slot is held by an abandoned 2019 project; we do not pursue PEP 541 reclaim.
 
 ## Tech stack
 
@@ -32,7 +32,7 @@ This repo (`pycenote`) contains the core library only. PyPI publication name wil
 ## Project structure
 
 ```
-pycenote/
+cenote/  (repo root; on disk during dev, may be cloned as `cenote/` after the rename)
 ├── src/cenote/
 │   ├── chunkers/      # Text/markdown splitting
 │   ├── embedders/     # Embedding providers (protocol + impls)
