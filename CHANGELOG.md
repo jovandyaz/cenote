@@ -32,6 +32,12 @@ Versioning: [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
   from any `VectorStore` via `get_all_chunks`. Per-namespace index cached for
   the retriever lifetime; `from_chunks(chunks, tokenizer)` builds without a
   store. Metadata filters supported. Runtime dep: `rank_bm25>=0.2.2`.
+- `cenote.retrievers.HybridRetriever`: Reciprocal Rank Fusion over an
+  arbitrary list of retrievers. Configurable per-retriever `weights`, RRF
+  `k_constant` (default 60 per Cormack et al. 2009), and explicit
+  `candidate_pool_size` (defaults to `max(limit * 4, 100)`) for tuning the
+  candidate pool each base retriever fetches before fusion. Each base
+  retriever runs in parallel via `asyncio.gather`; results dedup by `chunk.id`.
 - `cenote.rerankers.VoyageReranker`: production-grade cross-encoder reranker
   over Voyage's `/v1/rerank`. Batching (≤1000/req), concurrency caps,
   exponential-backoff retries on 429/5xx, optional RPM rate limiting —
