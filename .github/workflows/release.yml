@@ -24,10 +24,11 @@ jobs:
       - run: uv sync --all-extras
       - name: Build wheel + sdist
         run: uv build
-      - name: Verify build
+      - name: Verify build in isolated venv
         run: |
-          uv pip install --system dist/cenote_core-*.whl
-          python -c "import cenote; print(cenote.__version__)"
+          uv venv /tmp/verify
+          uv pip install --python /tmp/verify/bin/python dist/cenote_core-*.whl
+          /tmp/verify/bin/python -c "import cenote; print(cenote.__version__)"
       - name: Publish to PyPI via Trusted Publishing
         uses: pypa/gh-action-pypi-publish@release/v1
         with:

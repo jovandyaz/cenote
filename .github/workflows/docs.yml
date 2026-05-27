@@ -22,6 +22,10 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v6
+      - name: Setup Pages (auto-enable if not configured)
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
       - uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
