@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import hashlib
 import os
 import uuid
 from collections.abc import AsyncGenerator
@@ -12,8 +11,8 @@ import pytest
 import pytest_asyncio
 
 from cenote.errors import DimensionMismatchError
-from cenote.models import Chunk, EmbeddedChunk
 from cenote.stores import PgVectorStore
+from tests._factories import make_embedded as _embedded
 
 
 def _expected_migrations() -> list[str]:
@@ -30,28 +29,6 @@ DSN = os.getenv(
     "TEST_DATABASE_URL",
     "postgresql://cenote:cenote@localhost:5433/cenote_test",
 )
-
-
-def _embedded(
-    text: str,
-    vector: list[float],
-    *,
-    idx: int = 0,
-    namespace_doc_id: str = "d",
-) -> EmbeddedChunk:
-    chunk = Chunk(
-        id=f"{namespace_doc_id}:{idx}",
-        document_id=namespace_doc_id,
-        content=text,
-        position=idx,
-        content_hash=hashlib.sha256(text.encode()).hexdigest(),
-    )
-    return EmbeddedChunk(
-        chunk=chunk,
-        embedding=vector,
-        embedding_model="mock:default",
-        dimensions=len(vector),
-    )
 
 
 @pytest_asyncio.fixture

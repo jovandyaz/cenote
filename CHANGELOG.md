@@ -28,6 +28,27 @@ Versioning: [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
   `RecursiveCharacterChunker` while heading hierarchy is preserved in
   `chunk.metadata['headings']` and prepended to `chunk.content` per the
   Chunker contract.
+- `cenote.retrievers.BM25Retriever`: Okapi BM25 over chunks lazily loaded
+  from any `VectorStore` via `get_all_chunks`. Per-namespace index cached for
+  the retriever lifetime; `from_chunks(chunks, tokenizer)` builds without a
+  store. Metadata filters supported. Runtime dep: `rank_bm25>=0.2.2`.
+- `cenote.rerankers.VoyageReranker`: production-grade cross-encoder reranker
+  over Voyage's `/v1/rerank`. Batching (≤1000/req), concurrency caps,
+  exponential-backoff retries on 429/5xx, optional RPM rate limiting —
+  mirrors `VoyageEmbedder` hardenings. `retriever` is normalized to
+  `<original>+rerank:voyage` on every result.
+- `cenote.rerankers.CohereReranker`: production-grade multilingual reranker
+  over Cohere's `/v2/rerank` (default model `rerank-3.5-multilingual`). Same
+  hardenings pattern as `VoyageReranker`; `retriever` normalized to
+  `<original>+rerank:cohere`.
+- `cenote.rerankers._http_reranker._HTTPReranker`: shared base class capturing
+  Voyage/Cohere common HTTP rerank machinery (batching, semaphore, retries,
+  rate limiting). Provider impls now declare ~10 lines of constants +
+  `_payload`. Adding a new provider costs ~15 lines. Also defends against
+  invalid/duplicate indices in provider responses with a logged skip.
+- Test factories consolidated to `tests/_factories.py` (`make_chunk`,
+  `make_embedded`, `make_result`). Replaces 5 near-duplicate helpers across
+  store/retriever/reranker test files.
 
 ## [0.1.0] - 2026-05-25
 

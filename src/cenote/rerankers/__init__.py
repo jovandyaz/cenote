@@ -1,6 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0
-"""Reranker primitives (Protocol only in M1.0; impls in M1.1)."""
+"""Reranker primitives — re-score retrieval results."""
 
 from cenote.rerankers.base import Reranker
+from cenote.rerankers.cohere import CohereReranker
+from cenote.rerankers.voyage import VoyageReranker
 
-__all__ = ["Reranker"]
+__all__ = ["CohereReranker", "Reranker", "VoyageReranker"]
