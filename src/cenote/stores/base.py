@@ -3,9 +3,10 @@
 
 from __future__ import annotations
 
+from collections.abc import AsyncIterator
 from typing import Any, Protocol
 
-from cenote.models import EmbeddedChunk, RetrievalResult
+from cenote.models import Chunk, EmbeddedChunk, RetrievalResult
 from cenote.types import Vector
 
 
@@ -29,3 +30,15 @@ class VectorStore(Protocol):
     async def delete(self, chunk_ids: list[str], namespace: str) -> None: ...
 
     async def delete_namespace(self, namespace: str) -> None: ...
+
+    def get_all_chunks(
+        self,
+        namespace: str,
+        filter: dict[str, Any] | None = None,
+    ) -> AsyncIterator[Chunk]:
+        """Yield every chunk in `namespace` (optional metadata exact-match filter).
+
+        Order is implementation-defined but stable for a given namespace.
+        Drives BM25Retriever index builds; does not load embeddings.
+        """
+        ...

@@ -137,3 +137,37 @@ class TestInMemoryVectorStore:
 def test_invalid_dimensions_raises() -> None:
     with pytest.raises(ConfigurationError):
         InMemoryVectorStore(dimensions=0)
+
+
+@pytest.mark.asyncio
+class TestInMemoryGetAllChunks:
+    async def test_yields_every_chunk_in_namespace(self) -> None:
+        store = InMemoryVectorStore(dimensions=2)
+        items = [_embedded("a", [1.0, 0.0], idx=0), _embedded("b", [0.0, 1.0], idx=1)]
+        await store.upsert(items, namespace="ns")
+
+        out: list[Chunk] = []
+        async for c in store.get_all_chunks(namespace="ns"):
+            out.append(c)
+        assert {c.content for c in out} == {"a", "b"}
+
+    async def test_namespace_isolation(self) -> None:
+        store = InMemoryVectorStore(dimensions=2)
+        await store.upsert([_embedded("a", [1.0, 0.0])], namespace="ns-a")
+        await store.upsert([_embedded("b", [0.0, 1.0])], namespace="ns-b")
+        a_out = [c async for c in store.get_all_chunks(namespace="ns-a")]
+        assert {c.content for c in a_out} == {"a"}
+
+    async def test_missing_namespace_yields_nothing(self) -> None:
+        store = InMemoryVectorStore(dimensions=2)
+        assert [c async for c in store.get_all_chunks(namespace="missing")] == []
+
+    async def test_filter_metadata(self) -> None:
+        store = InMemoryVectorStore(dimensions=2)
+        a = _embedded("a", [1.0, 0.0], idx=0)
+        b = _embedded("b", [0.0, 1.0], idx=1)
+        a.chunk.metadata["lang"] = "en"
+        b.chunk.metadata["lang"] = "es"
+        await store.upsert([a, b], namespace="ns")
+        out = [c async for c in store.get_all_chunks(namespace="ns", filter={"lang": "es"})]
+        assert [c.content for c in out] == ["b"]

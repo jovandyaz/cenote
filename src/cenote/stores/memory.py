@@ -4,12 +4,14 @@
 from __future__ import annotations
 
 import logging
+from collections.abc import AsyncIterator
 from typing import Any
 
 import numpy as np
 
+from cenote._filters import matches_filter
 from cenote.errors import ConfigurationError, DimensionMismatchError
-from cenote.models import EmbeddedChunk, RetrievalResult
+from cenote.models import Chunk, EmbeddedChunk, RetrievalResult
 from cenote.types import Vector
 
 logger = logging.getLogger(__name__)
@@ -55,7 +57,7 @@ class InMemoryVectorStore:
             return []
         scored: list[tuple[float, EmbeddedChunk]] = []
         for ec in bucket.values():
-            if filter and not _matches_filter(ec.chunk.metadata, filter):
+            if filter and not matches_filter(ec.chunk.metadata, filter):
                 continue
             v = np.asarray(ec.embedding, dtype=np.float64)
             v_norm = float(np.linalg.norm(v))
@@ -85,7 +87,13 @@ class InMemoryVectorStore:
     async def delete_namespace(self, namespace: str) -> None:
         self._data.pop(namespace, None)
 
-
-def _matches_filter(metadata: dict[str, Any], filter: dict[str, Any]) -> bool:
-    """Exact-match all filter keys against metadata."""
-    return all(metadata.get(key) == expected for key, expected in filter.items())
+    async def get_all_chunks(
+        self,
+        namespace: str,
+        filter: dict[str, Any] | None = None,
+    ) -> AsyncIterator[Chunk]:
+        bucket = self._data.get(namespace, {})
+        for ec in bucket.values():
+            if filter and not matches_filter(ec.chunk.metadata, filter):
+                continue
+            yield ec.chunk

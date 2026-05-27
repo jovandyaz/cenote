@@ -12,7 +12,22 @@ Versioning: [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- (none yet)
+- `VectorStore.get_all_chunks(namespace, filter)` async iterator added to the
+  Protocol. `InMemoryVectorStore` impl trivially iterates the namespace dict;
+  `PgVectorStore` impl uses an asyncpg server-side cursor with `prefetch=200`
+  for memory-bounded iteration over large namespaces. Migration `003` is a
+  no-op placeholder (the `(namespace, id)` PK from `002` already provides the
+  needed index). Drives BM25Retriever index builds in subsequent tasks.
+- `cenote.tokenizers` subpackage: `Tokenizer` Protocol +
+  `SpanishTokenizer` (Snowball-ES stemming via `PyStemmer`, ~440-word
+  inline `SPANISH_STOPWORDS` frozenset, NFD accent fold). Drives
+  Spanish-aware BM25 retrieval in M1.1.
+- `cenote.chunkers.MarkdownChunker`: structure-aware splitter respecting
+  heading boundaries (H1-H3 by default), fenced code blocks, tables,
+  blockquotes, and lists as atomic units. Long sections fall back to
+  `RecursiveCharacterChunker` while heading hierarchy is preserved in
+  `chunk.metadata['headings']` and prepended to `chunk.content` per the
+  Chunker contract.
 
 ## [0.1.0] - 2026-05-25
 

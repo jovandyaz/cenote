@@ -6,6 +6,7 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+from collections.abc import AsyncIterator
 from importlib import resources
 from typing import Any
 
@@ -187,18 +188,7 @@ class PgVectorStore:
             rows = await conn.fetch(sql, *params)
         return [
             RetrievalResult(
-                chunk=Chunk(
-                    id=r["id"],
-                    document_id=r["document_id"],
-                    content=r["content"],
-                    position=r["position"],
-                    metadata=(
-                        json.loads(r["metadata"])
-                        if isinstance(r["metadata"], str)
-                        else r["metadata"]
-                    ),
-                    content_hash=r["content_hash"],
-                ),
+                chunk=self._chunk_from_row(r),
                 score=float(r["score"]),
                 retriever="vector",
             )
@@ -219,8 +209,42 @@ class PgVectorStore:
         async with self._pool.acquire() as conn, conn.transaction():
             await conn.execute(f"DELETE FROM {self._table} WHERE namespace = $1", namespace)
 
+    async def get_all_chunks(
+        self,
+        namespace: str,
+        filter: dict[str, Any] | None = None,
+    ) -> AsyncIterator[Chunk]:
+        """Yield chunks via an async cursor — safe for very large namespaces."""
+        params: list[Any] = [namespace]
+        filter_sql = ""
+        if filter:
+            params.append(json.dumps(filter))
+            filter_sql = "AND metadata @> $2::jsonb "
+        sql = f"""
+            SELECT id, document_id, content, position, metadata, content_hash
+            FROM {self._table}
+            WHERE namespace = $1 {filter_sql}
+            ORDER BY id
+        """
+        async with self._pool.acquire() as conn, conn.transaction():
+            async for row in conn.cursor(sql, *params, prefetch=200):
+                yield self._chunk_from_row(row)
+
     async def close(self) -> None:
         await self._pool.close()
+
+    @staticmethod
+    def _chunk_from_row(row: asyncpg.Record) -> Chunk:
+        return Chunk(
+            id=row["id"],
+            document_id=row["document_id"],
+            content=row["content"],
+            position=row["position"],
+            metadata=(
+                json.loads(row["metadata"]) if isinstance(row["metadata"], str) else row["metadata"]
+            ),
+            content_hash=row["content_hash"],
+        )
 
     @staticmethod
     def _migration_files() -> list[str]:

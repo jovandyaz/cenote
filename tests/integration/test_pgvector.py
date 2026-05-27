@@ -139,3 +139,29 @@ class TestPgVectorStore:
             await store.upsert([good, bad], namespace=ns)
         out = await store.search([1.0, 0.0, 0.0, 0.0], namespace=ns)
         assert {r.chunk.content for r in out} == set()
+
+    async def test_get_all_chunks_yields_paginated(self, store: PgVectorStore, ns: str) -> None:
+        items = [_embedded(f"text-{i}", [1.0, 0.0, 0.0, 0.0], idx=i) for i in range(150)]
+        await store.upsert(items, namespace=ns)
+        out = [c async for c in store.get_all_chunks(namespace=ns)]
+        assert len(out) == 150
+        assert {c.content for c in out} == {f"text-{i}" for i in range(150)}
+
+    async def test_get_all_chunks_namespace_isolation(self, store: PgVectorStore) -> None:
+        ns_a = f"a-{uuid.uuid4()}"
+        ns_b = f"b-{uuid.uuid4()}"
+        await store.upsert([_embedded("only-a", [1.0, 0.0, 0.0, 0.0])], namespace=ns_a)
+        await store.upsert([_embedded("only-b", [1.0, 0.0, 0.0, 0.0])], namespace=ns_b)
+        a_out = [c async for c in store.get_all_chunks(namespace=ns_a)]
+        assert {c.content for c in a_out} == {"only-a"}
+        await store.delete_namespace(ns_a)
+        await store.delete_namespace(ns_b)
+
+    async def test_get_all_chunks_filter(self, store: PgVectorStore, ns: str) -> None:
+        a = _embedded("alpha", [1.0, 0.0, 0.0, 0.0], idx=0)
+        b = _embedded("beta", [1.0, 0.0, 0.0, 0.0], idx=1)
+        a.chunk.metadata["lang"] = "en"
+        b.chunk.metadata["lang"] = "es"
+        await store.upsert([a, b], namespace=ns)
+        out = [c async for c in store.get_all_chunks(namespace=ns, filter={"lang": "es"})]
+        assert [c.content for c in out] == ["beta"]

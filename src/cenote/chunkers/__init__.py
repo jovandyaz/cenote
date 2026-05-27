@@ -2,6 +2,7 @@
 """Chunker primitives — split Documents into Chunks."""
 
 from cenote.chunkers.base import Chunker
+from cenote.chunkers.markdown import MarkdownChunker
 from cenote.chunkers.recursive import RecursiveCharacterChunker
 
-__all__ = ["Chunker", "RecursiveCharacterChunker"]
+__all__ = ["Chunker", "MarkdownChunker", "RecursiveCharacterChunker"]
