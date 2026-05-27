@@ -55,6 +55,50 @@ Versioning: [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
 - Test factories consolidated to `tests/_factories.py` (`make_chunk`,
   `make_embedded`, `make_result`). Replaces 5 near-duplicate helpers across
   store/retriever/reranker test files.
+- `cenote.eval` bundled datasets: `load_miracl_es_subset()`,
+  `load_miracl_en_subset()` (CC-BY-SA 3.0, see
+  `src/cenote/eval/datasets/NOTICE.md`), and `load_cenote_mini_es()`
+  (custom Spanish RAG-domain QA pairs, Apache 2.0). `EvalDataset` /
+  `Query` dataclasses standardize loaders. Datasets ship in the wheel via
+  hatch include rules.
+- One-time `scripts/build_miracl_subset.py` for reproducible subsampling
+  with `random.seed(42)`. Not shipped in the wheel.
+- `cenote.eval.RetrievalBenchmark` + `BenchmarkResult`: orchestrator that
+  runs any `Retriever` over an `EvalDataset` and emits aggregated and
+  per-query `precision@k`, `recall@k`, and MRR. Doc-level matching against
+  qrels (`chunk.document_id`). Works with vector, BM25, hybrid, and rerank
+  pipelines.
+- Dev dep: `deepeval>=2.0` recorded for upcoming DeepEval-specific
+  evaluators in M1.2; the M1.1 bench harness is intentionally
+  framework-agnostic.
+- `scripts/run_baseline.py`: reproducible baseline runner — indexes any
+  EvalDataset through `VoyageEmbedder + InMemoryVectorStore`, then runs
+  five retrieval pipelines (vector, BM25, hybrid, hybrid+voyage-rerank,
+  hybrid+cohere-rerank) through `RetrievalBenchmark`. Outputs JSON for
+  copy-paste into the published baselines report.
+- `docs/benchmarks/2026-05-27-m1-1-baselines.md`: M1.1 published baselines
+  report. Ships with deferral language for the real numbers — full
+  benchmark requires (a) successful MIRACL build (blocked by
+  `datasets>=4` rejecting MIRACL's loader script) and (b) Voyage +
+  Cohere API credentials. Both deferred to a 0.2.1 patch release; the
+  retrieval stack itself is production-ready in 0.2.0.
+- `docs/site/benchmarks.md` + `mkdocs.yml` nav entry: surfaces the
+  benchmark report from the docs site.
+- README link to the M1.1 baselines report.
+
+### Changed
+
+- `cenote.eval.metrics.{precision_at_k, recall_at_k, mean_reciprocal_rank}`
+  accept an optional `key: Callable[[RetrievalResult], str]` parameter for
+  extracting the comparison ID. Defaults to `chunk.id`. Used by
+  `RetrievalBenchmark` to match against `chunk.document_id` at doc-level
+  granularity without allocating a re-wrapped `Chunk` per result. Backwards
+  compatible (positional/keyword args unchanged).
+- `cenote.eval.EvalDataset.qrels` derived from `Query.relevant_doc_ids` in
+  `__post_init__` rather than passed in at construction. Eliminates the
+  parallel-data sync risk; `Query` is now the single source of truth for
+  relevance judgments. Loader signature: `EvalDataset(name, language,
+  documents, queries)`.
 
 ## [0.1.0] - 2026-05-25
 

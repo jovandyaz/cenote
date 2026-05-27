@@ -37,11 +37,16 @@ def make_embedded(
 
 
 def make_result(
-    content: str, score: float, *, idx: int = 0, retriever: str = "vector"
+    content: str,
+    score: float,
+    *,
+    idx: int = 0,
+    retriever: str = "vector",
+    document_id: str = "d",
 ) -> RetrievalResult:
     """Build a RetrievalResult with a deterministic Chunk inside."""
     return RetrievalResult(
-        chunk=make_chunk(content, idx=idx),
+        chunk=make_chunk(content, idx=idx, document_id=document_id),
         score=score,
         retriever=retriever,
     )

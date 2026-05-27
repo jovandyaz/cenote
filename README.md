@@ -122,6 +122,9 @@ GitHub renders `.drawio` files inline natively (since 2024). Click any link abov
 - 🚧 **M1.1** — MarkdownChunker, BM25 + Hybrid retrievers, Spanish-aware tokenizer, concrete rerankers, DeepEval integration
 - 📋 **M1.2+** — OTel/Langfuse adapters, LLM client (Anthropic Claude with prompt caching), agent primitives, CFDI domain pack
 
+[See M1.1 baselines](docs/benchmarks/2026-05-27-m1-1-baselines.md) for the
+Spanish BM25 + hybrid retrieval scaffold. Real numbers ship in 0.2.1.
+
 See [CHANGELOG.md](CHANGELOG.md) for a granular record of what shipped when.
 
 ## Downstream products

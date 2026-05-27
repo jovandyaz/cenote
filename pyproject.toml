@@ -39,7 +39,12 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["src/cenote"]
 # Ship the py.typed marker so consumers (mypy/pyright) see our types.
-include = ["src/cenote/py.typed", "src/cenote/**/*.sql"]
+include = [
+    "src/cenote/py.typed",
+    "src/cenote/**/*.sql",
+    "src/cenote/**/*.jsonl",
+    "src/cenote/**/NOTICE.md",
+]
 
 [dependency-groups]
 dev = [
@@ -53,12 +58,14 @@ dev = [
     "asyncpg-stubs>=0.31.2",
     "mkdocs-material>=9.5",
     "mkdocstrings-python>=1.10",
+    "datasets>=2.20",
+    "deepeval>=2.0",
 ]
 
 [tool.ruff]
 line-length = 100
 target-version = "py312"
-src = ["src", "tests", "demos", "examples"]
+src = ["src", "tests", "demos", "examples", "scripts"]
 
 [tool.ruff.lint]
 select = ["E", "W", "F", "I", "N", "UP", "B", "SIM", "RUF"]

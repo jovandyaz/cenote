@@ -50,6 +50,7 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Quickstart: quickstart.md
+  - Benchmarks: benchmarks.md
   - API Reference:
       - models: api/models.md
       - chunkers: api/chunkers.md
