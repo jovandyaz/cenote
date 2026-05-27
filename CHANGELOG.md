@@ -12,6 +12,12 @@ Versioning: [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- (none yet)
+
+## [0.2.0] - 2026-05-27
+
+### Added
+
 - `VectorStore.get_all_chunks(namespace, filter)` async iterator added to the
   Protocol. `InMemoryVectorStore` impl trivially iterates the namespace dict;
   `PgVectorStore` impl uses an asyncpg server-side cursor with `prefetch=200`

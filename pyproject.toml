@@ -1,6 +1,6 @@
 [project]
 name = "cenote-core"
-version = "0.1.0"
+version = "0.2.0"
 description = "Production-grade Python framework for building agentic RAG applications. Multilingual-capable with a roadmap toward Spanish/LATAM-first features."
 readme = "README.md"
 requires-python = ">=3.12"
