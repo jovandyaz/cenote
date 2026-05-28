@@ -1,24 +1,46 @@
 # SPDX-License-Identifier: Apache-2.0
-"""Tracer Protocol + no-op default. M1.1 will add OTel and Langfuse adapters."""
+"""Tracer + SpanContext Protocols + no-op defaults."""
 
 from __future__ import annotations
 
-import logging
 from collections.abc import AsyncIterator
 from contextlib import AbstractAsyncContextManager, asynccontextmanager
 from typing import Any, Protocol
 
-logger = logging.getLogger(__name__)
+
+class SpanContext(Protocol):
+    """Active span handle. Adapters bridge to OTel/Langfuse span APIs."""
+
+    def set_attribute(self, key: str, value: Any) -> None:
+        """Attach a key/value attribute to the active span."""
+        ...
+
+    def record_exception(self, exception: BaseException) -> None:
+        """Record an exception against the active span (does not raise)."""
+        ...
 
 
 class Tracer(Protocol):
-    """Wraps operations for observability; implementations stream span events to
-    an external system. NoopTracer does nothing when no tracer is injected.
+    """Wraps operations for observability. Implementations stream span events
+    to an external system; NoopTracer drops them.
     """
 
     def span(
         self, name: str, attributes: dict[str, Any] | None = None
-    ) -> AbstractAsyncContextManager[None]: ...
+    ) -> AbstractAsyncContextManager[SpanContext]: ...
+
+
+class NoopSpanContext:
+    """SpanContext that drops every call. Shared singleton via `_NOOP_SPAN`."""
+
+    def set_attribute(self, key: str, value: Any) -> None:
+        return None
+
+    def record_exception(self, exception: BaseException) -> None:
+        return None
+
+
+_NOOP_SPAN = NoopSpanContext()
 
 
 class NoopTracer:
@@ -27,5 +49,5 @@ class NoopTracer:
     @asynccontextmanager
     async def span(
         self, name: str, attributes: dict[str, Any] | None = None
-    ) -> AsyncIterator[None]:
-        yield
+    ) -> AsyncIterator[SpanContext]:
+        yield _NOOP_SPAN

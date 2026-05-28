@@ -12,7 +12,21 @@ Versioning: [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- (none yet)
+- `cenote.observability.SpanContext` Protocol: `set_attribute(k, v)` +
+  `record_exception(e)`. `NoopSpanContext` is the no-op default.
+- `cenote.embedders.cache.SqliteCache`: persistent `EmbeddingCache` backed by
+  aiosqlite. Single-table schema, float32 BLOB storage (4× smaller than
+  JSON, rounding error below cosine-similarity noise). `await
+  SqliteCache.connect(path)` opens the file and applies the schema; composes
+  with `CachedEmbedder` like any other cache. Runtime dep: `aiosqlite>=0.20`.
+
+### Changed
+
+- **BREAKING (pre-1.0)**: `Tracer.span()` now yields a `SpanContext` rather
+  than `None`. Custom `Tracer` implementations must yield an object
+  conforming to the `SpanContext` Protocol. Existing callers that use
+  `async with tracer.span("op"): ...` (ignoring the yielded value) are
+  unaffected.
 
 ## [0.2.0] - 2026-05-27
 

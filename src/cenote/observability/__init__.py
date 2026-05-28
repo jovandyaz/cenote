@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
-"""Observability primitives — Tracer Protocol + NoopTracer."""
+"""Observability primitives — Tracer + SpanContext Protocols + no-op defaults."""
 
-from cenote.observability.base import NoopTracer, Tracer
+from cenote.observability.base import NoopSpanContext, NoopTracer, SpanContext, Tracer
 
-__all__ = ["NoopTracer", "Tracer"]
+__all__ = ["NoopSpanContext", "NoopTracer", "SpanContext", "Tracer"]
