@@ -60,7 +60,7 @@ class HashEmbedder:
 
     def _vec(self, text: str) -> list[float]:
         seed = int.from_bytes(hashlib.sha256(text.encode()).digest()[:8], "big")
-        rng = random.Random(seed)
+        rng = random.Random(seed)  # noqa: S311 — deterministic example embedder, not crypto
         raw = [rng.gauss(0.0, 1.0) for _ in range(self._dimensions)]
         norm = math.sqrt(sum(x * x for x in raw)) or 1.0
         return [x / norm for x in raw]

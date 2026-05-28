@@ -71,6 +71,7 @@ dev = [
     "mkdocstrings-python>=1.10",
     "datasets>=2.20",
     "deepeval>=2.0",
+    "cyclonedx-py>=1.0.1",
 ]
 
 [tool.ruff]
@@ -79,8 +80,11 @@ target-version = "py312"
 src = ["src", "tests", "demos", "examples", "scripts"]
 
 [tool.ruff.lint]
-select = ["E", "W", "F", "I", "N", "UP", "B", "SIM", "RUF"]
-ignore = []
+select = ["E", "W", "F", "I", "N", "UP", "B", "SIM", "RUF", "S"]
+ignore = ["S101"]  # assert statements are fine in pytest
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S105", "S106"]  # hardcoded passwords in tests (S101 already global)
 
 [tool.ruff.format]
 quote-style = "double"

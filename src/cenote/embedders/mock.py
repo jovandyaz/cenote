@@ -51,7 +51,7 @@ class MockEmbedder:
         # exhibit concentration of measure and hide ranking bugs in tests.
         seed_bytes = hashlib.sha256(text.encode()).digest()
         seed_int = int.from_bytes(seed_bytes[:8], "big")
-        rng = random.Random(seed_int)
+        rng = random.Random(seed_int)  # noqa: S311 — deterministic mock for tests, not crypto
         raw = [rng.gauss(0.0, 1.0) for _ in range(self._dimensions)]
         norm = math.sqrt(sum(x * x for x in raw)) or 1.0
         return [x / norm for x in raw]

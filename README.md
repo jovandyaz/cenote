@@ -20,6 +20,16 @@ cenote is **not** a LangChain alternative. LangChain is a kitchen-sink framework
 
 The name comes from cenotes — natural deep wells in the Yucatán Peninsula used by the Maya as sacred sources of fresh water and knowledge. The metaphor maps to RAG: a deep, structured source of knowledge from which you retrieve context.
 
+## When NOT to use cenote
+
+cenote is a focused library, not a universal RAG toolkit. Don't choose it when:
+
+- **You need 100+ integrations out-of-the-box.** Use LangChain or LlamaIndex — they bundle adapters for nearly every vector DB, LLM, and embedder. cenote ships protocols and a few concrete impls; everything else is your code.
+- **You want a hosted RAG service.** cenote is a library you install. For managed RAG, evaluate Vectara, Pinecone Assistants, or AWS Bedrock Knowledge Bases.
+- **You need a chatbot UI out-of-the-box.** cenote doesn't ship UI. Pair it with `gradio`, `streamlit`, or your own web stack.
+- **Your data is small (<10k chunks) and single-tenant.** A 50-line script with `numpy.dot` and SQLite is enough. cenote's multi-tenancy + production hardenings add value above that scale.
+- **You can't adopt Python 3.12+.** cenote requires modern Python; we don't backport.
+
 ## Status
 
 | Module | M1.0 (released) | M1.1+ (planned) |

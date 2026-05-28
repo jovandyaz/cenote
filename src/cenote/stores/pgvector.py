@@ -154,7 +154,7 @@ class PgVectorStore:
                         content_hash = EXCLUDED.content_hash,
                         embedding = EXCLUDED.embedding,
                         embedding_model = EXCLUDED.embedding_model
-                    """,
+                    """,  # noqa: S608 — table_name is constructor-controlled, not user input
                 rows,
             )
 
@@ -181,7 +181,7 @@ class PgVectorStore:
             WHERE namespace = $1 {filter_sql}
             ORDER BY embedding <=> $2::vector
             LIMIT $3
-        """
+        """  # noqa: S608 — table_name is constructor-controlled, not user input
         async with self._pool.acquire() as conn:
             if self._hnsw_ef_search is not None:
                 await conn.execute(f"SET LOCAL hnsw.ef_search = {int(self._hnsw_ef_search)}")
@@ -200,14 +200,14 @@ class PgVectorStore:
             return
         async with self._pool.acquire() as conn, conn.transaction():
             await conn.execute(
-                f"DELETE FROM {self._table} WHERE namespace = $1 AND id = ANY($2)",
+                f"DELETE FROM {self._table} WHERE namespace = $1 AND id = ANY($2)",  # noqa: S608 — table_name is constructor-controlled, not user input
                 namespace,
                 chunk_ids,
             )
 
     async def delete_namespace(self, namespace: str) -> None:
         async with self._pool.acquire() as conn, conn.transaction():
-            await conn.execute(f"DELETE FROM {self._table} WHERE namespace = $1", namespace)
+            await conn.execute(f"DELETE FROM {self._table} WHERE namespace = $1", namespace)  # noqa: S608 — table_name is constructor-controlled, not user input
 
     async def get_all_chunks(
         self,
@@ -225,7 +225,7 @@ class PgVectorStore:
             FROM {self._table}
             WHERE namespace = $1 {filter_sql}
             ORDER BY id
-        """
+        """  # noqa: S608 — table_name is constructor-controlled, not user input
         async with self._pool.acquire() as conn, conn.transaction():
             async for row in conn.cursor(sql, *params, prefetch=200):
                 yield self._chunk_from_row(row)

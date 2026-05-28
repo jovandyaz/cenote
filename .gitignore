@@ -60,3 +60,6 @@ docs/superpowers/
 
 # mkdocs build output
 /site/
+
+# SBOM build output
+sbom.cdx.json
