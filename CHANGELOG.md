@@ -15,10 +15,14 @@ Versioning: [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
 - `cenote.observability.SpanContext` Protocol: `set_attribute(k, v)` +
   `record_exception(e)`. `NoopSpanContext` is the no-op default.
 - `cenote.embedders.cache.SqliteCache`: persistent `EmbeddingCache` backed by
-  aiosqlite. Single-table schema, float32 BLOB storage (4× smaller than
-  JSON, rounding error below cosine-similarity noise). `await
-  SqliteCache.connect(path)` opens the file and applies the schema; composes
-  with `CachedEmbedder` like any other cache. Runtime dep: `aiosqlite>=0.20`.
+  aiosqlite. Single-table schema, float32 BLOB storage (4x smaller than
+  JSON, rounding error below cosine-similarity noise), WAL journal mode +
+  `synchronous=NORMAL` for ~10x batch-write throughput. Supports `async
+  with` via `__aenter__`/`__aexit__`. Composes with `CachedEmbedder` like
+  any other cache. Runtime dep: `aiosqlite>=0.20`.
+- `EmbeddingCache.set_many(items)`: bulk-write API on the Protocol. Persistent
+  backends batch into a single transaction; `CachedEmbedder.embed()` uses
+  it on the miss path so an N-chunk batch is one fsync, not N.
 
 ### Changed
 
