@@ -50,7 +50,7 @@ check_benchmarks_execute() {
     info "Check 3/5: 3 benchmarks execute without error"
     if uv run pytest tests/benchmarks/ --benchmark-only --benchmark-disable-gc \
             --quiet > /tmp/cenote-bench.log 2>&1; then
-        pass "all 3 benchmarks completed ($(grep -E '^=+.*passed' /tmp/cenote-bench.log | tail -1))"
+        pass "all 3 benchmarks completed ($(grep -E 'passed in' /tmp/cenote-bench.log | tail -1))"
     else
         fail "benchmarks failed — see /tmp/cenote-bench.log"
     fi
