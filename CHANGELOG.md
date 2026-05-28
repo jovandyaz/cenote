@@ -23,6 +23,23 @@ Versioning: [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
 - `EmbeddingCache.set_many(items)`: bulk-write API on the Protocol. Persistent
   backends batch into a single transaction; `CachedEmbedder.embed()` uses
   it on the miss path so an N-chunk batch is one fsync, not N.
+- `cenote.observability.otel.OTelTracer` + `OTelSpanContext`: adapter
+  bridging the `Tracer` Protocol to `opentelemetry.trace.Tracer`. Install
+  with `pip install cenote-core[otel]`. Without the extra, import raises a
+  clear `ImportError`. Optional dep: `opentelemetry-api>=1.27`,
+  `opentelemetry-sdk>=1.27`.
+- `cenote.observability.langfuse.LangfuseTracer` + `LangfuseSpanContext`:
+  adapter bridging the `Tracer` Protocol to a `langfuse.Langfuse` client.
+  Spans with the `llm.` prefix create `generation` observations (carry
+  token/model metadata via `gen_ai.*` attribute mapping); other spans
+  create plain `span` observations. Install with
+  `pip install cenote-core[langfuse]`. Optional dep: `langfuse>=2.0`.
+- `cenote.observability.wrappers.{TracedEmbedder, TracedRetriever,
+  TracedReranker}`: composition-pattern wrappers that emit spans for any
+  Embedder/Retriever/Reranker impl without modifying existing classes
+  (OCP). Use `TracedEmbedder(VoyageEmbedder(...), tracer)` to opt in. Emits
+  spans `embedder.embed`, `retriever.retrieve`, `reranker.rerank` with
+  `gen_ai.*` attributes where relevant.
 
 ### Changed
 

@@ -47,6 +47,15 @@ include = [
     "src/cenote/**/NOTICE.md",
 ]
 
+[project.optional-dependencies]
+otel = [
+    "opentelemetry-api>=1.27",
+    "opentelemetry-sdk>=1.27",
+]
+langfuse = [
+    "langfuse>=2.0",
+]
+
 [dependency-groups]
 dev = [
     "ruff>=0.7",
