@@ -15,41 +15,7 @@ from cenote.observability.wrappers import (
     TracedRetriever,
 )
 from tests._factories import make_chunk, make_embedded, make_result
-
-
-class _StubSpanContext:
-    def __init__(self) -> None:
-        self.attributes: dict[str, Any] = {}
-        self.exceptions: list[BaseException] = []
-
-    def set_attribute(self, key: str, value: Any) -> None:
-        self.attributes[key] = value
-
-    def record_exception(self, exception: BaseException) -> None:
-        self.exceptions.append(exception)
-
-
-class _StubTracer:
-    def __init__(self) -> None:
-        self.spans: list[tuple[str, _StubSpanContext]] = []
-
-    def span(self, name: str, attributes: dict[str, Any] | None = None) -> Any:
-        ctx = _StubSpanContext()
-        if attributes:
-            ctx.attributes.update(attributes)
-        self.spans.append((name, ctx))
-        return _AsyncCtx(ctx)
-
-
-class _AsyncCtx:
-    def __init__(self, ctx: _StubSpanContext) -> None:
-        self._ctx = ctx
-
-    async def __aenter__(self) -> _StubSpanContext:
-        return self._ctx
-
-    async def __aexit__(self, exc_type: object, exc: object, tb: object) -> None:
-        return None
+from tests._stubs import StubTracer
 
 
 class _StubEmbedder:
@@ -92,12 +58,12 @@ class _StubReranker:
 @pytest.mark.asyncio
 class TestTracedEmbedder:
     async def test_passes_through_properties(self) -> None:
-        wrapped = TracedEmbedder(_StubEmbedder(), _StubTracer())
+        wrapped = TracedEmbedder(_StubEmbedder(), StubTracer())
         assert wrapped.model_id == "mock:default"
         assert wrapped.dimensions == 2
 
     async def test_emits_span_on_embed(self) -> None:
-        tracer = _StubTracer()
+        tracer = StubTracer()
         wrapped = TracedEmbedder(_StubEmbedder(), tracer)
         out = await wrapped.embed([make_chunk("hello", idx=0), make_chunk("world", idx=1)])
         assert len(out) == 2
@@ -108,7 +74,7 @@ class TestTracedEmbedder:
         assert ctx.attributes.get("batch_size") == 2
 
     async def test_emits_span_on_embed_query(self) -> None:
-        tracer = _StubTracer()
+        tracer = StubTracer()
         wrapped = TracedEmbedder(_StubEmbedder(), tracer)
         vec = await wrapped.embed_query("hola mundo")
         assert vec == [0.1, 0.2]
@@ -121,7 +87,7 @@ class TestTracedEmbedder:
 @pytest.mark.asyncio
 class TestTracedRetriever:
     async def test_emits_span_with_attributes(self) -> None:
-        tracer = _StubTracer()
+        tracer = StubTracer()
         wrapped = TracedRetriever(_StubRetriever(), tracer)
         out = await wrapped.retrieve("q", namespace="ns", limit=5)
         assert len(out) == 2
@@ -135,7 +101,7 @@ class TestTracedRetriever:
 @pytest.mark.asyncio
 class TestTracedReranker:
     async def test_emits_span_and_passes_model_id(self) -> None:
-        tracer = _StubTracer()
+        tracer = StubTracer()
         wrapped = TracedReranker(_StubReranker(), tracer)
         results = [
             make_result("a", 0.5, idx=0, retriever="stub"),
@@ -163,7 +129,7 @@ async def test_embedder_exception_recorded_and_reraised() -> None:
         async def embed_query(self, query: str) -> list[float]:
             raise RuntimeError("network down")
 
-    tracer = _StubTracer()
+    tracer = StubTracer()
     wrapped = TracedEmbedder(_BrokenEmbedder(), tracer)
     with pytest.raises(RuntimeError, match="network down"):
         await wrapped.embed([make_chunk("x")])
@@ -184,7 +150,7 @@ async def test_retriever_exception_recorded_and_reraised() -> None:
         ) -> list[RetrievalResult]:
             raise RuntimeError("db down")
 
-    tracer = _StubTracer()
+    tracer = StubTracer()
     wrapped = TracedRetriever(_BrokenRetriever(), tracer)
     with pytest.raises(RuntimeError, match="db down"):
         await wrapped.retrieve("q", namespace="ns")
@@ -206,7 +172,7 @@ async def test_reranker_exception_recorded_and_reraised() -> None:
         ) -> list[RetrievalResult]:
             raise RuntimeError("api down")
 
-    tracer = _StubTracer()
+    tracer = StubTracer()
     wrapped = TracedReranker(_BrokenReranker(), tracer)
     with pytest.raises(RuntimeError, match="api down"):
         await wrapped.rerank("q", [], top_k=5)

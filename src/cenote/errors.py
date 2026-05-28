@@ -30,3 +30,7 @@ class DimensionMismatchError(VectorStoreError):
 
 class MigrationError(VectorStoreError):
     """Schema migration failure."""
+
+
+class LLMError(CenoteError):
+    """Failure during an LLM call (non-rate-limit)."""

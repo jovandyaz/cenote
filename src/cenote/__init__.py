@@ -13,10 +13,12 @@ from cenote.errors import (
     ConfigurationError,
     DimensionMismatchError,
     EmbeddingError,
+    LLMError,
     MigrationError,
     RateLimitError,
     VectorStoreError,
 )
+from cenote.models import Message
 from cenote.types import ContentHash, ModelId, Namespace, Vector
 
 __all__ = [
@@ -25,6 +27,8 @@ __all__ = [
     "ContentHash",
     "DimensionMismatchError",
     "EmbeddingError",
+    "LLMError",
+    "Message",
     "MigrationError",
     "ModelId",
     "Namespace",

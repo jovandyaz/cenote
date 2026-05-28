@@ -40,6 +40,19 @@ Versioning: [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
   (OCP). Use `TracedEmbedder(VoyageEmbedder(...), tracer)` to opt in. Emits
   spans `embedder.embed`, `retriever.retrieve`, `reranker.rerank` with
   `gen_ai.*` attributes where relevant.
+- `cenote.llm.LLMClient` Protocol with async `complete()` + `stream()`,
+  plus `NoopLLM` default for tests. Conversation turns use a new
+  `cenote.models.Message` Pydantic v2 model (`role`, `content`, optional
+  `cache_control="ephemeral"` for Anthropic prompt caching).
+- `cenote.errors.LLMError`: new exception class for non-rate-limit LLM
+  failures.
+- `cenote.llm.AnthropicLLM`: production-grade Anthropic Claude client.
+  `complete()` returns the assistant text, `stream()` yields deltas in
+  arrival order. Native prompt caching via `Message(cache_control="ephemeral")`
+  markers. Tracer-aware (`tracer=` ctor kwarg; defaults to NoopTracer).
+  Spans `llm.complete`/`llm.stream` emit `gen_ai.*` attributes including
+  `cache_read_input_tokens` and `cache_creation_input_tokens` for cost
+  tracking. Runtime dep: `anthropic>=0.39`.
 
 ### Changed
 
