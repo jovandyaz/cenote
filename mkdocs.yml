@@ -62,4 +62,6 @@ nav:
       - Custom embedder: extending/custom-embedder.md
       - Custom chunker: extending/custom-chunker.md
   - Architecture: architecture.md
+  - ADRs: adrs.md
+  - Definition of Done: dod.md
   - Changelog: changelog.md
