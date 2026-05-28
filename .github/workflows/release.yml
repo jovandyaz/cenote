@@ -29,6 +29,14 @@ jobs:
           uv venv /tmp/verify
           uv pip install --python /tmp/verify/bin/python dist/cenote_core-*.whl
           /tmp/verify/bin/python -c "import cenote; print(cenote.__version__)"
+      - name: Generate CycloneDX SBOM
+        run: ./scripts/generate_sbom.sh
+      - name: Attach SBOM to GitHub Release
+        uses: softprops/action-gh-release@v3
+        with:
+          files: sbom.cdx.json
+          fail_on_unmatched_files: true
+      # Sigstore signing is auto-applied by pypa/gh-action-pypi-publish via PEP 740.
       - name: Publish to PyPI via Trusted Publishing
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
