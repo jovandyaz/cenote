@@ -22,9 +22,9 @@ Friction points observed in M1.0 → M1.2 cycle:
 
 Adopt **automated release engineering** in three independently-revertible steps:
 
-### Step 1 — Sigstore wheel signing (immediate)
+### Step 1 — Sigstore wheel signing (auto-applied — see Implementation notes)
 
-Add `sigstore/gh-action-sigstore-python@v3` to `.github/workflows/release.yml` after the build step, before PyPI upload. Sigstore generates a `.sigstore` bundle per artifact using the GitHub OIDC identity. Pairs with existing Trusted Publishing.
+Original plan called for adding `sigstore/gh-action-sigstore-python@v3` explicitly. Superseded: `pypa/gh-action-pypi-publish` (already in use) auto-applies Sigstore attestations via PEP 740 when invoked with Trusted Publishing. No explicit step needed. See Implementation notes below.
 
 ### Step 2 — SBOM generation in release workflow (immediate)
 
@@ -71,9 +71,17 @@ Pin Docker images in CI by digest (see ADR-0002). Document the `uv export` step 
 **Neutral**:
 - The `release-please` PR is the only PR in the repo (other commits remain direct-to-main per [CONTRIBUTING.md](../../CONTRIBUTING.md)). Inconsistent but pragmatic.
 
+## Implementation notes
+
+### 2026-05-28 — Phase 1 execution
+
+- **Sigstore signing**: confirmed auto-applied by `pypa/gh-action-pypi-publish` via PEP 740 attestations on Trusted Publishing. No `sigstore/gh-action-sigstore-python` step added to `release.yml`. The release workflow now generates SBOM and attaches it to the GitHub Release; Sigstore happens transparently in the publish step.
+- **SBOM**: generated via `./scripts/generate_sbom.sh` (introduced Phase 0) and uploaded to the GitHub Release via `softprops/action-gh-release@v3`.
+- **release-please + reproducible builds + gitlint**: deferred to Phase 5 per the foundation-hardening plan.
+
 ## References
 
 - [release-please](https://github.com/googleapis/release-please)
-- [sigstore-python GitHub Action](https://github.com/sigstore/gh-action-sigstore-python)
+- [pypa/gh-action-pypi-publish](https://github.com/pypa/gh-action-pypi-publish) — auto-signs via Sigstore on Trusted Publishing
 - [PEP 740](https://peps.python.org/pep-0740/) — index support for digital attestations
 - ADR-0002 (security tooling) — Sigstore + SBOM appear in both, intentional overlap

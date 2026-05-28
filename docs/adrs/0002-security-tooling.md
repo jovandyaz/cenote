@@ -68,9 +68,23 @@ Adopt the following security tooling in **phased order**, each independently rev
 **Neutral**:
 - Sigstore signing creates a `.sigstore` bundle next to each wheel on PyPI. Users can verify with `python -m sigstore verify`. No-op for users who don't.
 
+## Implementation notes
+
+### 2026-05-28 — Phase 1 execution corrections
+
+Two deviations from the original Phase 1 spec, made after consulting current upstream docs (see memory `feedback-docs-first-official`):
+
+1. **OSV-Scanner: use reusable workflows, not the composite action.** Google's own docs explicitly recommend the reusable workflow pattern over the composite action (the action may change in minor patches). Implementation: split into `osv-scanner-pr.yml` (PR delta scan) + `osv-scanner-scheduled.yml` (full scan on push + Mondays 04:17 UTC). Pinned to `@v2.3.8` (latest stable; plan's `@v2.0.0` was incorrect — that tag never existed).
+
+2. **Sigstore signing is automatic via `pypa/gh-action-pypi-publish`.** No explicit `sigstore/gh-action-sigstore-python` step is needed. PyPI Trusted Publishing auto-applies Sigstore attestations per PEP 740. The sigstore-python action's own README states: "Are you publishing a package to PyPI? If so, you do not need this action." A one-line comment in `release.yml` notes this for future maintainers.
+
+Net effect: the original ADR's goals (CodeQL, OSV-Scanner, Sigstore, SBOM) are all met; the implementation is simpler than originally planned.
+
 ## References
 
 - [PEP 740](https://peps.python.org/pep-0740/) — Index support for digital attestations
 - [SLSA framework](https://slsa.dev/) — supply chain levels
+- [OSV-Scanner GitHub Action docs](https://google.github.io/osv-scanner/github-action/) — reusable workflows recommended
+- [pypa/gh-action-pypi-publish](https://github.com/pypa/gh-action-pypi-publish) — auto-signs via Sigstore on Trusted Publishing
 - [OWASP CycloneDX](https://cyclonedx.org/) — SBOM standard
 - EU CRA — Cyber Resilience Act (in transition)
