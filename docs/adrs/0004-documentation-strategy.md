@@ -94,6 +94,25 @@ This directory. Architecture decisions, append-only, citable.
 **Neutral**:
 - Old docs versions stay on `gh-pages` forever (cheap, ~MB scale).
 
+## Implementation notes
+
+### 2026-05-28 — Phase 3 execution: mike deferred
+
+`mike` adoption was deferred to Phase 5 (release engineering) because the current docs deployment uses `actions/deploy-pages` (artifact-based, GitHub Pages source = "GitHub Actions"), while `mike` requires the source to be set to "Deploy from a branch (gh-pages)". The switch is a one-time manual repo setting change and is best synchronized with the first tagged release that needs versioned docs (the v0.4.0 cut, when `release-please` lands per [ADR-0005](0005-release-engineering.md)).
+
+What shipped in Phase 3:
+
+- `docs/site/dod.md` — Definition of Done page with explicit, checkable criteria for "production-grade".
+- `docs/site/adrs.md` — index page listing all 8 ADRs with links to the GitHub-hosted source. Chose this over rendering the ADRs inside mkdocs to avoid rewriting their internal relative links (which reference `../../src/...` and only resolve in GitHub's view).
+- mkdocs nav updated to surface both pages.
+
+What is deferred until Phase 5:
+
+- `mike` installation as a dev dep.
+- `docs.yml` rewrite for versioned deploy via `mike deploy --push <version> latest`.
+- One-time `gh api repos/<owner>/<repo>/pages -X POST -f source[branch]=gh-pages -f source[path]=/` (or equivalent UI flip).
+- Initial bootstrap deploy as `dev` alias on the first push after migration.
+
 ## References
 
 - [mike](https://github.com/jimporter/mike) — docs versioning
