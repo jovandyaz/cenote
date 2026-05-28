@@ -72,6 +72,8 @@ dev = [
     "datasets>=2.20",
     "deepeval>=2.0",
     "cyclonedx-py>=1.0.1",
+    "hypothesis>=6.155",
+    "pytest-benchmark>=5.2",
 ]
 
 [tool.ruff]
@@ -111,11 +113,14 @@ testpaths = ["tests"]
 asyncio_mode = "auto"
 markers = [
     "integration: tests requiring external services (Postgres, etc.)",
+    "benchmark: performance benchmarks (skipped by default in unit run)",
+    "slow: tests with runtime > 1s",
 ]
 addopts = [
     "-ra",
     "--strict-markers",
     "--strict-config",
+    "--benchmark-skip",
 ]
 
 [tool.coverage.run]

@@ -3,6 +3,9 @@
 
 from __future__ import annotations
 
+from hypothesis import HealthCheck, given, settings
+from hypothesis import strategies as st
+
 from cenote.tokenizers import SpanishTokenizer, Tokenizer
 
 
@@ -56,3 +59,40 @@ class TestSpanishTokenizer:
 
     def test_punctuation_only(self) -> None:
         assert SpanishTokenizer().tokenize("!!!,...???") == []
+
+
+@given(
+    text=st.text(
+        alphabet=st.characters(blacklist_categories=("Cs",)),
+        min_size=0,
+        max_size=500,
+    )
+)
+@settings(suppress_health_check=[HealthCheck.too_slow], max_examples=200)
+def test_fold_accents_is_idempotent(text: str) -> None:
+    """fold(fold(x)) must equal fold(x) — the operation is a projection."""
+    from cenote.tokenizers.spanish import _fold_accents
+
+    folded_once = _fold_accents(text)
+    folded_twice = _fold_accents(folded_once)
+    assert folded_once == folded_twice
+
+
+@given(text=st.text(min_size=0, max_size=300))
+@settings(suppress_health_check=[HealthCheck.too_slow], max_examples=100)
+def test_tokenize_is_deterministic(text: str) -> None:
+    """Tokenization is pure: same input must always yield the same output."""
+    tok = SpanishTokenizer()
+    assert tok.tokenize(text) == tok.tokenize(text)
+
+
+@given(text=st.text(min_size=0, max_size=300))
+@settings(suppress_health_check=[HealthCheck.too_slow], max_examples=100)
+def test_tokens_contain_no_stopwords(text: str) -> None:
+    """The post-stem stopword filter must remove all SPANISH_STOPWORDS entries."""
+    from cenote.tokenizers.spanish import SPANISH_STOPWORDS
+
+    tok = SpanishTokenizer()
+    tokens = tok.tokenize(text)
+    leaked = [t for t in tokens if t in SPANISH_STOPWORDS]
+    assert leaked == [], f"stopwords leaked through: {leaked}"

@@ -4,6 +4,9 @@ from __future__ import annotations
 
 import hashlib
 
+from hypothesis import HealthCheck, given, settings
+from hypothesis import strategies as st
+
 from cenote.chunkers import RecursiveCharacterChunker
 from cenote.models import Document
 
@@ -97,3 +100,46 @@ class TestRecursiveCharacterChunker:
         chunks = chunker.chunk(Document(id="d", content=content))
         # Disjoint reconstruction
         assert "".join(c.content for c in chunks) == content
+
+
+@given(
+    content=st.text(min_size=1, max_size=2000),
+    chunk_size=st.integers(min_value=32, max_value=512),
+    overlap=st.integers(min_value=0, max_value=31),
+)
+@settings(suppress_health_check=[HealthCheck.too_slow], max_examples=100)
+def test_chunks_never_exceed_chunk_size(content: str, chunk_size: int, overlap: int) -> None:
+    """Every produced chunk's content length must be <= chunk_size."""
+    chunker = RecursiveCharacterChunker(chunk_size=chunk_size, chunk_overlap=overlap)
+    doc = Document(id="d", content=content)
+    chunks = chunker.chunk(doc)
+    for c in chunks:
+        assert len(c.content) <= chunk_size, f"chunk {c.id} has {len(c.content)} > {chunk_size}"
+
+
+@given(content=st.text(min_size=1, max_size=2000))
+@settings(suppress_health_check=[HealthCheck.too_slow], max_examples=50)
+def test_chunks_preserve_full_content_with_zero_overlap(content: str) -> None:
+    """With overlap=0, concatenated chunks must equal the original content."""
+    chunker = RecursiveCharacterChunker(chunk_size=256, chunk_overlap=0)
+    doc = Document(id="d", content=content)
+    chunks = chunker.chunk(doc)
+    if not chunks:
+        assert not content
+        return
+    reconstructed = "".join(c.content for c in chunks)
+    assert reconstructed == content
+
+
+@given(
+    content=st.text(min_size=10, max_size=2000),
+    chunk_size=st.integers(min_value=64, max_value=512),
+)
+@settings(suppress_health_check=[HealthCheck.too_slow], max_examples=50)
+def test_chunk_ids_are_unique(content: str, chunk_size: int) -> None:
+    """All chunk IDs in a single document's output must be unique."""
+    chunker = RecursiveCharacterChunker(chunk_size=chunk_size, chunk_overlap=0)
+    doc = Document(id="d", content=content)
+    chunks = chunker.chunk(doc)
+    ids = [c.id for c in chunks]
+    assert len(ids) == len(set(ids))
