@@ -7,7 +7,10 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$REPO_ROOT"
 
-export PATH="/Users/jovandyaz/Library/Python/3.9/bin:$PATH"
+if ! command -v uv > /dev/null 2>&1; then
+    echo "ERROR: 'uv' not found in PATH. Install via https://docs.astral.sh/uv/ then retry." >&2
+    exit 127
+fi
 
 GREEN='\033[0;32m'
 RED='\033[0;31m'
