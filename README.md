@@ -119,8 +119,9 @@ GitHub renders `.drawio` files inline natively (since 2024). Click any link abov
 ## Roadmap
 
 - ✅ **M1.0** (released as v0.1.0) — Core primitives: chunker, embedders, stores, retrievers, future-API stubs
-- 🚧 **M1.1** — MarkdownChunker, BM25 + Hybrid retrievers, Spanish-aware tokenizer, concrete rerankers, DeepEval integration
-- 📋 **M1.2+** — OTel/Langfuse adapters, LLM client (Anthropic Claude with prompt caching), agent primitives, CFDI domain pack
+- ✅ **M1.1** (released as v0.2.0) — MarkdownChunker, BM25 + Hybrid retrievers, Spanish-aware tokenizer, concrete rerankers, RetrievalBenchmark
+- ✅ **M1.2** (released as v0.3.0) — OTel + Langfuse adapters, Traced wrappers, AnthropicLLM with prompt caching, SqliteCache
+- 📋 **M1.3+** — Tool use in AnthropicLLM, RedisCache, OpenAI compat, agent primitives, CFDI domain pack
 
 [See M1.1 baselines](docs/benchmarks/2026-05-27-m1-1-baselines.md) for the
 Spanish BM25 + hybrid retrieval scaffold. Real numbers ship in 0.2.1.

@@ -12,6 +12,12 @@ Versioning: [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- (none yet)
+
+## [0.3.0] - 2026-05-27
+
+### Added
+
 - `cenote.observability.SpanContext` Protocol: `set_attribute(k, v)` +
   `record_exception(e)`. `NoopSpanContext` is the no-op default.
 - `cenote.embedders.cache.SqliteCache`: persistent `EmbeddingCache` backed by
