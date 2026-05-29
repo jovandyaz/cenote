@@ -3,6 +3,8 @@
 
 from __future__ import annotations
 
+import pickle
+
 from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
@@ -59,6 +61,24 @@ class TestSpanishTokenizer:
 
     def test_punctuation_only(self) -> None:
         assert SpanishTokenizer().tokenize("!!!,...???") == []
+
+    def test_pickle_round_trip_default(self) -> None:
+        """Tokenizer must survive pickle.dumps/loads — the Stemmer C-ext is not picklable
+        but the public behavior must round-trip identically."""
+        original = SpanishTokenizer()
+        sample = "los perros corriendo en el parque"
+        expected = original.tokenize(sample)
+        restored = pickle.loads(pickle.dumps(original))  # noqa: S301
+        assert isinstance(restored, SpanishTokenizer)
+        assert restored.tokenize(sample) == expected
+
+    def test_pickle_round_trip_preserves_strip_accents(self) -> None:
+        original = SpanishTokenizer(strip_accents=False)
+        sample = "niño café"
+        expected = original.tokenize(sample)
+        restored = pickle.loads(pickle.dumps(original))  # noqa: S301
+        assert restored.tokenize(sample) == expected
+        assert restored.tokenize(sample) != SpanishTokenizer(strip_accents=True).tokenize(sample)
 
 
 @given(

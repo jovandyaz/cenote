@@ -471,6 +471,15 @@ class SpanishTokenizer:
         stems = self._stemmer.stemWords(kept)
         return [s for s in stems if s not in SPANISH_STOPWORDS]
 
+    def __getstate__(self) -> dict[str, object]:
+        # PyStemmer's Stemmer wraps a libstemmer C object with no __reduce__.
+        # Drop it on pickle; __setstate__ rebuilds it from the language tag.
+        return {"_strip_accents": self._strip_accents}
+
+    def __setstate__(self, state: dict[str, object]) -> None:
+        self._strip_accents = bool(state["_strip_accents"])
+        self._stemmer = Stemmer.Stemmer("spanish")
+
 
 def _fold_accents(text: str) -> str:
     nfd = unicodedata.normalize("NFD", text)
