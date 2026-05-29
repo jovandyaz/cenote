@@ -82,6 +82,15 @@ Pin Docker images in CI by digest (see ADR-0002). Document the `uv export` step 
 ### 2026-05-28 — Phase 5 execution
 
 - **release-please-action wired** (v5.0.0): `release-please-config.json` + `.release-please-manifest.json` + `.github/workflows/release-please.yml`. Uses `pull-request-title-pattern: "chore: release ${version}"` so the eventual squash-merge commit on `main` passes the project gitlint regex (allowed prefix `chore`).
+  - **Operational prerequisite (one-time, observed 2026-05-29)**: the repo must allow GitHub Actions to create pull requests. Run once:
+
+    ```bash
+    gh api repos/jovandyaz/cenote/actions/permissions/workflow -X PUT \
+      -F default_workflow_permissions=write \
+      -F can_approve_pull_request_reviews=true
+    ```
+
+    Or via UI: Settings → Actions → General → Workflow permissions → ✅ *Allow GitHub Actions to create and approve pull requests*. The first run after the Phase 5 push (commit `4319548`) failed at the open-PR step with `GitHub Actions is not permitted to create or approve pull requests` and left an orphan branch `release-please--branches--main--components--cenote-core` on the remote — benign, release-please reuses it on next run after the setting is flipped.
 - **gitlint commit-msg hook** (v0.19.1): added to `.pre-commit-config.yaml` with project regex `^(feat|fix|chore|docs|test|refactor|perf|ci|build|style)(\([\w-]+\))?: .+`. Activated locally via `pre-commit install --hook-type commit-msg`. Note: the original Phase 5 implementation shipped a double-backslash regex that the wrap-up adversarial verify caught and corrected before commit.
 - **Reproducible builds** (ADR Step 4): already satisfied by Phase 0 (Docker digest pinning per ADR-0002) and `uv.lock` committed at repo root. No new action needed.
 - **mike adoption**: deferred to maintainer action per ADR-0004 cross-reference; runbook at [docs/operations.md](../../docs/operations.md).
