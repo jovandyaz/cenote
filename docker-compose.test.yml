@@ -1,3 +1,5 @@
+name: cenote
+
 services:
   postgres:
     # pgvector/pgvector:pg16 as of 2026-05-28; re-pin manually on upgrade
