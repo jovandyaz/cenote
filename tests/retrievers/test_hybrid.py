@@ -244,3 +244,49 @@ async def test_hybrid_no_fabricated_chunks(n_results: int) -> None:
     input_ids = {r.chunk.id for r in input_a} | {r.chunk.id for r in input_b}
     output_ids = {r.chunk.id for r in results}
     assert output_ids.issubset(input_ids)
+
+
+@pytest.mark.asyncio
+async def test_hybrid_tolerates_single_retriever_failure() -> None:
+    """If one base retriever raises, HybridRetriever returns results from the others."""
+
+    class _FailingRetriever:
+        async def retrieve(
+            self,
+            query: str,
+            namespace: str,
+            limit: int = 10,
+            filter: dict[str, Any] | None = None,
+        ) -> list[RetrievalResult]:
+            raise RuntimeError("simulated upstream failure")
+
+    ok = _StubRetriever([make_result("alpha", 0.9, idx=0)])
+    failing: Any = _FailingRetriever()
+    h = HybridRetriever(retrievers=[ok, failing])
+    results = await h.retrieve("q", namespace="ns", limit=5)
+    assert len(results) == 1
+    assert results[0].chunk.content == "alpha"
+
+
+@pytest.mark.asyncio
+async def test_hybrid_returns_empty_when_all_retrievers_fail() -> None:
+    """If ALL base retrievers raise, HybridRetriever returns an empty list (not raises)."""
+
+    class _FailingRetriever:
+        def __init__(self, msg: str) -> None:
+            self._msg = msg
+
+        async def retrieve(
+            self,
+            query: str,
+            namespace: str,
+            limit: int = 10,
+            filter: dict[str, Any] | None = None,
+        ) -> list[RetrievalResult]:
+            raise RuntimeError(self._msg)
+
+    a: Any = _FailingRetriever("a")
+    b: Any = _FailingRetriever("b")
+    h = HybridRetriever(retrievers=[a, b])
+    results = await h.retrieve("q", namespace="ns", limit=5)
+    assert results == []

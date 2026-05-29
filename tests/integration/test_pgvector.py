@@ -142,3 +142,26 @@ class TestPgVectorStore:
         await store.upsert([a, b], namespace=ns)
         out = [c async for c in store.get_all_chunks(namespace=ns, filter={"lang": "es"})]
         assert [c.content for c in out] == ["beta"]
+
+
+@pytest.mark.asyncio
+async def test_hnsw_ef_search_executes_within_transaction() -> None:
+    """Sentinel for the SET LOCAL transaction-wrap fix.
+
+    PostgreSQL silently discards `SET LOCAL` outside a transaction.
+    Before the fix, calling search() with `hnsw_ef_search` set would NOT
+    actually apply the setting. After the fix, the SET LOCAL runs inside
+    `conn.transaction()` and takes effect.
+
+    This test asserts the call path completes without error when
+    `hnsw_ef_search` is set — that the SET LOCAL is in a valid transaction
+    context and doesn't raise. Validating the actual recall improvement
+    requires a real HNSW corpus and is left to manual benchmarking.
+    """
+    store = await PgVectorStore.connect(DSN, dimensions=4, hnsw_ef_search=99)
+    try:
+        await store.apply_migrations()
+        result = await store.search([0.1, 0.2, 0.3, 0.4], namespace="t_ef_search", limit=1)
+        assert result == []
+    finally:
+        await store.close()

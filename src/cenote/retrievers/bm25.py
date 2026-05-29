@@ -4,11 +4,13 @@
 from __future__ import annotations
 
 import logging
+from collections import OrderedDict
 from typing import Any
 
 from rank_bm25 import BM25Okapi
 
 from cenote._filters import matches_filter
+from cenote.errors import ConfigurationError
 from cenote.models import Chunk, RetrievalResult
 from cenote.stores.base import VectorStore
 from cenote.tokenizers.base import Tokenizer
@@ -30,14 +32,18 @@ class BM25Retriever:
         tokenizer: Tokenizer,
         k1: float = 1.5,
         b: float = 0.75,
+        max_cached_namespaces: int = 128,
     ) -> None:
+        if max_cached_namespaces <= 0:
+            raise ConfigurationError("max_cached_namespaces must be positive")
         self._store = store
         self._tokenizer = tokenizer
         self._k1 = k1
         self._b = b
-        # Concurrent cold-cache calls may double-build; benign because BM25Okapi
-        # is deterministic on the same input — last writer wins, no corruption.
-        self._caches: dict[str, tuple[BM25Okapi, list[Chunk]]] = {}
+        self._max_cached = max_cached_namespaces
+        # OrderedDict for LRU: move_to_end on access, popitem(last=False) on eviction.
+        # Concurrent cold-cache calls may double-build; benign (BM25Okapi is deterministic).
+        self._caches: OrderedDict[str, tuple[BM25Okapi, list[Chunk]]] = OrderedDict()
 
     @classmethod
     def from_chunks(
@@ -47,11 +53,27 @@ class BM25Retriever:
         k1: float = 1.5,
         b: float = 0.75,
         namespace: str = "default",
+        max_cached_namespaces: int = 128,
     ) -> BM25Retriever:
         """Construct directly from pre-loaded chunks; no VectorStore needed."""
-        retriever = cls(store=None, tokenizer=tokenizer, k1=k1, b=b)
+        retriever = cls(
+            store=None,
+            tokenizer=tokenizer,
+            k1=k1,
+            b=b,
+            max_cached_namespaces=max_cached_namespaces,
+        )
         retriever._caches[namespace] = retriever._build_index(chunks)
         return retriever
+
+    def invalidate(self, namespace: str) -> None:
+        """Drop the cached BM25 index for `namespace`. No-op if absent.
+
+        Callers should invoke this after upserting chunks into a namespace
+        whose index is already cached, otherwise stale results may be returned
+        for the retriever's lifetime.
+        """
+        self._caches.pop(namespace, None)
 
     async def retrieve(
         self,
@@ -60,7 +82,9 @@ class BM25Retriever:
         limit: int = 10,
         filter: dict[str, Any] | None = None,
     ) -> list[RetrievalResult]:
-        if namespace not in self._caches:
+        if namespace in self._caches:
+            self._caches.move_to_end(namespace)
+        else:
             if self._store is None:
                 logger.debug("BM25Retriever: no store and namespace %s missing", namespace)
                 return []
@@ -68,6 +92,9 @@ class BM25Retriever:
             if not chunks:
                 return []
             self._caches[namespace] = self._build_index(chunks)
+            while len(self._caches) > self._max_cached:
+                evicted, _ = self._caches.popitem(last=False)
+                logger.debug("BM25Retriever: evicted namespace %s from LRU cache", evicted)
         bm25, chunks = self._caches[namespace]
         tokens = self._tokenizer.tokenize(query)
         full_scores = bm25.get_scores(tokens)

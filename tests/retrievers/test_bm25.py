@@ -92,3 +92,62 @@ class TestBM25Retriever:
         retriever = BM25Retriever(store=store, tokenizer=SpanishTokenizer(), k1=1.2, b=0.5)
         out = await retriever.retrieve("perro", namespace="ns", limit=1)
         assert out[0].retriever == "bm25"
+
+
+@pytest.mark.asyncio
+async def test_bm25_invalidate_drops_cached_namespace() -> None:
+    """invalidate(namespace) removes the cached BM25 index for that namespace."""
+    chunks = [Chunk(id="c1", document_id="d", content="hola mundo", position=0, content_hash="h")]
+    r = BM25Retriever.from_chunks(chunks, tokenizer=SpanishTokenizer(), namespace="x")
+    assert "x" in r._caches
+    r.invalidate("x")
+    assert "x" not in r._caches
+
+
+@pytest.mark.asyncio
+async def test_bm25_invalidate_unknown_namespace_is_noop() -> None:
+    """invalidate() on a never-cached namespace is a silent no-op (does not raise)."""
+    r = BM25Retriever(store=None, tokenizer=SpanishTokenizer())
+    r.invalidate("never-cached")
+    assert "never-cached" not in r._caches
+
+
+@pytest.mark.asyncio
+async def test_bm25_lru_evicts_oldest_when_over_capacity() -> None:
+    """When the (N+1)-th namespace is queried, the least-recently-used is evicted."""
+    store = InMemoryVectorStore(dimensions=4)
+    for ns in ("a", "b", "c"):
+        await store.upsert(
+            [make_embedded("hola mundo", [0.1, 0.2, 0.3, 0.4], idx=0, document_id=ns)],
+            namespace=ns,
+        )
+
+    r = BM25Retriever(
+        store=store,
+        tokenizer=SpanishTokenizer(),
+        max_cached_namespaces=2,
+    )
+    await r.retrieve("hola", namespace="a")
+    await r.retrieve("hola", namespace="b")
+    assert set(r._caches.keys()) == {"a", "b"}
+    await r.retrieve("hola", namespace="c")
+    assert set(r._caches.keys()) == {"b", "c"}
+
+
+@pytest.mark.asyncio
+async def test_bm25_lru_move_to_end_on_hit() -> None:
+    """Re-accessing a cached namespace moves it to most-recently-used position."""
+    chunks_a = [Chunk(id="a:0", document_id="a", content="hola", position=0, content_hash="ha")]
+    chunks_b = [Chunk(id="b:0", document_id="b", content="hola", position=0, content_hash="hb")]
+    r = BM25Retriever.from_chunks(chunks_a, tokenizer=SpanishTokenizer(), namespace="a")
+    r._caches["b"] = r._build_index(chunks_b)
+    await r.retrieve("hola", namespace="a")
+    assert list(r._caches.keys()) == ["b", "a"]
+
+
+def test_bm25_rejects_zero_max_cached() -> None:
+    """ConfigurationError is raised when max_cached_namespaces is non-positive."""
+    from cenote.errors import ConfigurationError
+
+    with pytest.raises(ConfigurationError):
+        BM25Retriever(store=None, tokenizer=SpanishTokenizer(), max_cached_namespaces=0)

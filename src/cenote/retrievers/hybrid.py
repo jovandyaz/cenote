@@ -56,12 +56,25 @@ class HybridRetriever:
         filter: dict[str, Any] | None = None,
     ) -> list[RetrievalResult]:
         pool = self._pool_size if self._pool_size is not None else max(limit * 4, 100)
-        results = await asyncio.gather(
+        results_or_exc = await asyncio.gather(
             *[
                 r.retrieve(query, namespace=namespace, limit=pool, filter=filter)
                 for r in self._retrievers
-            ]
+            ],
+            return_exceptions=True,
         )
+        results: list[list[RetrievalResult]] = []
+        for i, item in enumerate(results_or_exc):
+            if isinstance(item, BaseException):
+                logger.warning(
+                    "HybridRetriever: base retriever %d (%s) failed: %s",
+                    i,
+                    type(self._retrievers[i]).__name__,
+                    item,
+                )
+                results.append([])
+            else:
+                results.append(item)
         fused_scores: dict[str, float] = {}
         first_seen: dict[str, Chunk] = {}
         for weight, batch in zip(self._weights, results, strict=True):

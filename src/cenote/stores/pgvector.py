@@ -182,7 +182,7 @@ class PgVectorStore:
             ORDER BY embedding <=> $2::vector
             LIMIT $3
         """  # noqa: S608 — table_name is constructor-controlled, not user input
-        async with self._pool.acquire() as conn:
+        async with self._pool.acquire() as conn, conn.transaction():
             if self._hnsw_ef_search is not None:
                 await conn.execute(f"SET LOCAL hnsw.ef_search = {int(self._hnsw_ef_search)}")
             rows = await conn.fetch(sql, *params)
