@@ -8,6 +8,13 @@ Versioning: [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
 > **Pre-1.0 disclaimer.** APIs may break in any minor release until `1.0.0` ships.
 > Patch releases (`0.1.0` → `0.1.1`) are bug fixes only.
 
+## [0.5.0](https://github.com/jovandyaz/cenote/compare/v0.4.1...v0.5.0) (2026-05-29)
+
+
+### Added
+
+* **bench:** MIRACL-es harness with ranx metrics and Pyserini-2cr report ([8fdbbb2](https://github.com/jovandyaz/cenote/commit/8fdbbb29b0606eaa86a5d4465baf3a46976d8bf4))
+
 ## [0.4.1](https://github.com/jovandyaz/cenote/compare/v0.4.0...v0.4.1) (2026-05-29)
 
 
