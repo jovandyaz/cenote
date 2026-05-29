@@ -8,6 +8,20 @@ Versioning: [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
 > **Pre-1.0 disclaimer.** APIs may break in any minor release until `1.0.0` ships.
 > Patch releases (`0.1.0` → `0.1.1`) are bug fixes only.
 
+## [0.4.1](https://github.com/jovandyaz/cenote/compare/v0.4.0...v0.4.1) (2026-05-29)
+
+
+### Fixed
+
+* **embedders:** honor Retry-After header, raise default max_retries to 6 ([c8d5880](https://github.com/jovandyaz/cenote/commit/c8d5880e71154a863f259acaf1c9c113bf8c835a))
+* **tokenizers:** make SpanishTokenizer pickle-safe via __getstate__ ([8c98598](https://github.com/jovandyaz/cenote/commit/8c9859821a0711b551e39f7eed3fdc051092be87))
+
+
+### Documentation
+
+* **adrs:** document v0.4.0 release lessons in 0005 ([631ed25](https://github.com/jovandyaz/cenote/commit/631ed252546f66bd6261f713a9334c64d8c64d85))
+* **proofs:** add v0.4.0 ship report ([e807fe3](https://github.com/jovandyaz/cenote/commit/e807fe319c679850f83462ff295c9cdc36d25407))
+
 ## [0.4.0](https://github.com/jovandyaz/cenote/compare/v0.3.0...v0.4.0) (2026-05-29)
 
 
