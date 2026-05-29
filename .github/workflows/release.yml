@@ -6,8 +6,8 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  id-token: write
+  contents: write  # softprops/action-gh-release needs write to attach SBOM asset
+  id-token: write  # Trusted Publishing + Sigstore attestations
 
 jobs:
   build-and-publish:
