@@ -5,6 +5,8 @@ from __future__ import annotations
 
 import logging
 from collections.abc import Awaitable, Callable
+from datetime import UTC, datetime
+from email.utils import parsedate_to_datetime
 from types import TracebackType
 
 import httpx
@@ -46,9 +48,40 @@ class RateLimiter:
         return None
 
 
-def _is_retryable_http_status(exc: BaseException) -> bool:
-    """stamina `on=` predicate: retry only on RETRY_STATUSES, not all HTTPStatusError."""
-    return isinstance(exc, httpx.HTTPStatusError) and exc.response.status_code in RETRY_STATUSES
+def _parse_retry_after(header: str | None) -> float | None:
+    """Parse an HTTP Retry-After header (RFC 7231 §7.1.3): seconds or HTTP-date.
+
+    Returns the wait duration in seconds, or None when the header is absent or
+    unparseable. Negative deltas (date already in the past) are clamped to 0.
+    """
+    if not header:
+        return None
+    raw = header.strip()
+    try:
+        return max(0.0, float(raw))
+    except ValueError:
+        pass
+    try:
+        target = parsedate_to_datetime(raw)
+    except (TypeError, ValueError):
+        return None
+    if target.tzinfo is None:
+        target = target.replace(tzinfo=UTC)
+    return max(0.0, (target - datetime.now(UTC)).total_seconds())
+
+
+def _retry_hook(exc: BaseException) -> bool | float:
+    """stamina backoff hook — retry on RETRY_STATUSES, override delay with Retry-After.
+
+    Returning a float makes stamina use that exact wait (no exp/jitter applied);
+    returning True keeps stamina's configured exponential schedule.
+    """
+    if not isinstance(exc, httpx.HTTPStatusError):
+        return False
+    if exc.response.status_code not in RETRY_STATUSES:
+        return False
+    retry_after = _parse_retry_after(exc.response.headers.get("retry-after"))
+    return retry_after if retry_after is not None else True
 
 
 async def retrying(
@@ -60,12 +93,14 @@ async def retrying(
     """Call `fn` with exponential backoff + jitter on transient HTTP errors.
 
     Retries only on RETRY_STATUSES; non-retryable HTTPStatusError propagates
-    immediately. After exhausting retries on 429, raises RateLimitError;
-    otherwise re-raises the original HTTPStatusError.
+    immediately. When the response carries a Retry-After header, that value
+    (seconds or HTTP-date) overrides the computed backoff. After exhausting
+    retries on 429, raises RateLimitError; otherwise re-raises the original
+    HTTPStatusError.
     """
     try:
         async for attempt in stamina.retry_context(
-            on=_is_retryable_http_status,
+            on=_retry_hook,
             attempts=max_retries + 1,
             wait_initial=base_backoff_seconds,
             wait_jitter=base_backoff_seconds * 0.5,

@@ -34,7 +34,7 @@ class CohereEmbedder:
         *,
         base_url: str = COHERE_BASE_URL,
         timeout: float = 30.0,
-        max_retries: int = 3,
+        max_retries: int = 6,
         base_backoff_seconds: float = 0.5,
         batch_size: int = COHERE_MAX_BATCH,
         max_concurrency: int = 4,
