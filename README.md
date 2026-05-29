@@ -44,6 +44,7 @@ cenote is a focused library, not a universal RAG toolkit. Don't choose it when:
 | `cenote.rerankers` | ✓ Reranker Protocol (no impl) | VoyageReranker, CohereReranker |
 | `cenote.observability` | ✓ Tracer Protocol, NoopTracer | OTel adapter, Langfuse adapter |
 | `cenote.eval` | ✓ precision_at_k, recall_at_k, mean_reciprocal_rank | DeepEval integration, bilingual EN/ES dataset |
+| `cenote.bench` | ✓ MiraclLoader, ranx-backed nDCG/Recall, RRF fusion, BenchRunner, Pyserini-2cr report, `cenote bench miracl-es` CLI ([docs](docs/benchmarks.md)) | BEIR sanity check, MTEB ES retrieval slice |
 | `cenote.llm` | — | Anthropic Claude wrapper with prompt-cache awareness |
 
 ## Quickstart
