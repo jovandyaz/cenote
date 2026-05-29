@@ -8,6 +8,37 @@ Versioning: [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
 > **Pre-1.0 disclaimer.** APIs may break in any minor release until `1.0.0` ships.
 > Patch releases (`0.1.0` → `0.1.1`) are bug fixes only.
 
+## [0.4.0](https://github.com/jovandyaz/cenote/compare/v0.3.0...v0.4.0) (2026-05-29)
+
+
+### Added
+
+* phase 4 primitives — TracedVectorStore + IndexingPipeline ([7679b89](https://github.com/jovandyaz/cenote/commit/7679b89381e7d856042076f7dc5cd74cb8fb72fc))
+
+
+### Fixed
+
+* **compose:** pin project name to cenote (was deriving from dir) ([b9f5b66](https://github.com/jovandyaz/cenote/commit/b9f5b66deee0ae708a38ca1917de3a6006a7b04d))
+* phase 4 bug fixes — HNSW tx wrap, hybrid resilience, BM25 LRU+invalidate ([fedf797](https://github.com/jovandyaz/cenote/commit/fedf7972d6e0862c475f126ebbf1fe3ed465ff5e))
+* **verify:** correct grep pattern in phase2.sh check 3 (pytest --quiet output) ([4c91dcc](https://github.com/jovandyaz/cenote/commit/4c91dcc679ee5068d26a15657b6cba9da7abe5cb))
+* **verify:** remove hardcoded user PATH from phase verify scripts ([154c960](https://github.com/jovandyaz/cenote/commit/154c960b235f32ee355b92c526f91d4bfc45f23c))
+
+
+### Changed
+
+* phase 4 retry+rate-limit — stamina with jitter + aiolimiter wrapper ([30fccf2](https://github.com/jovandyaz/cenote/commit/30fccf24aa4c1c9769d29544fafd8f7de764b6c1))
+
+
+### Documentation
+
+* **adrs:** add foundational ADRs 0001-0008 ([05e8558](https://github.com/jovandyaz/cenote/commit/05e8558b2297436fbca19ec881452b32754d8b3e))
+* **adrs:** document release-please PR-create prerequisite in 0005 ([0c1dc7d](https://github.com/jovandyaz/cenote/commit/0c1dc7d957c30020fe499fd3d1b0930f8e77cf47))
+* **adrs:** note Phase 1 corrections (OSV reusable wf, Sigstore auto via pypa-publish) ([4cacf97](https://github.com/jovandyaz/cenote/commit/4cacf97b0c80c3cc0873f1361bf94ef159384932))
+* **adrs:** note Phase 3 mike deferral to Phase 5 in ADR-0004 ([88815b8](https://github.com/jovandyaz/cenote/commit/88815b851754138fc743bfd35eb82a55d9dfc6b2))
+* **adrs:** phase 5 implementation notes in 0004 and 0005 ([2d0c9d3](https://github.com/jovandyaz/cenote/commit/2d0c9d3a03d27a517224e8b1b8997bc4381a8355))
+* phase 3 — Definition of Done + ADRs index pages in mkdocs nav ([f8f80d3](https://github.com/jovandyaz/cenote/commit/f8f80d39e77514c5b60a0e628eebbdd69aacc008))
+* **proofs:** add phase 4 + 5 practical proof report ([a09fa7e](https://github.com/jovandyaz/cenote/commit/a09fa7ec9d50b8b7acddf25632a87c354c00203a))
+
 ## [Unreleased]
 
 ### Added
