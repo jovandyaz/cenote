@@ -151,3 +151,22 @@ def test_bm25_rejects_zero_max_cached() -> None:
 
     with pytest.raises(ConfigurationError):
         BM25Retriever(store=None, tokenizer=SpanishTokenizer(), max_cached_namespaces=0)
+
+
+@pytest.mark.asyncio
+async def test_bm25_retriever_picklable_end_to_end() -> None:
+    """A built BM25Retriever (with SpanishTokenizer + warmed cache) must round-trip
+    through pickle so callers can persist the index between processes."""
+    import pickle
+
+    chunks = [
+        Chunk(id="c1", document_id="d", content="el perro corre", position=0, content_hash="x"),
+        Chunk(id="c2", document_id="d", content="los gatos duermen", position=1, content_hash="y"),
+    ]
+    original = BM25Retriever.from_chunks(chunks, tokenizer=SpanishTokenizer(), namespace="ns")
+    blob = pickle.dumps(original)
+    restored = pickle.loads(blob)  # noqa: S301
+    assert isinstance(restored, BM25Retriever)
+    out = await restored.retrieve("perros corriendo", namespace="ns", limit=2)
+    assert out[0].chunk.id == "c1"
+    assert out[0].retriever == "bm25"
