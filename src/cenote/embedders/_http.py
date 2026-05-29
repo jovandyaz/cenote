@@ -3,14 +3,13 @@
 
 from __future__ import annotations
 
-import asyncio
 import logging
-import time
-from collections import deque
 from collections.abc import Awaitable, Callable
 from types import TracebackType
 
 import httpx
+import stamina
+from aiolimiter import AsyncLimiter
 
 from cenote.errors import ConfigurationError, RateLimitError
 
@@ -20,8 +19,9 @@ RETRY_STATUSES: frozenset[int] = frozenset({429, 500, 502, 503, 504})
 
 
 class RateLimiter:
-    """Sliding-window rate limiter — at most `requests_per_minute` in any 60s window.
+    """Async rate limiter — at most `requests_per_minute` in any 60s window.
 
+    Thin wrapper around aiolimiter.AsyncLimiter (leaky-bucket algorithm).
     Usage:
         limiter = RateLimiter(requests_per_minute=300)
         async with limiter:
@@ -31,25 +31,10 @@ class RateLimiter:
     def __init__(self, requests_per_minute: int) -> None:
         if requests_per_minute <= 0:
             raise ConfigurationError("requests_per_minute must be positive")
-        self._rpm = requests_per_minute
-        self._window_s = 60.0
-        self._timestamps: deque[float] = deque()
-        self._lock = asyncio.Lock()
+        self._limiter = AsyncLimiter(max_rate=requests_per_minute, time_period=60.0)
 
     async def __aenter__(self) -> RateLimiter:
-        async with self._lock:
-            now = time.monotonic()
-            while self._timestamps and now - self._timestamps[0] >= self._window_s:
-                self._timestamps.popleft()
-            if len(self._timestamps) >= self._rpm:
-                wait_for = self._window_s - (now - self._timestamps[0])
-                if wait_for > 0:
-                    logger.warning("Rate limit budget exhausted, waiting %.2fs", wait_for)
-                await asyncio.sleep(max(wait_for, 0.0))
-                now = time.monotonic()
-                while self._timestamps and now - self._timestamps[0] >= self._window_s:
-                    self._timestamps.popleft()
-            self._timestamps.append(time.monotonic())
+        await self._limiter.acquire()
         return self
 
     async def __aexit__(
@@ -61,41 +46,37 @@ class RateLimiter:
         return None
 
 
+def _is_retryable_http_status(exc: BaseException) -> bool:
+    """stamina `on=` predicate: retry only on RETRY_STATUSES, not all HTTPStatusError."""
+    return isinstance(exc, httpx.HTTPStatusError) and exc.response.status_code in RETRY_STATUSES
+
+
 async def retrying(
     fn: Callable[[], Awaitable[httpx.Response]],
     *,
     max_retries: int,
     base_backoff_seconds: float,
 ) -> httpx.Response:
-    """Call `fn` with exponential backoff on transient HTTP errors.
+    """Call `fn` with exponential backoff + jitter on transient HTTP errors.
 
-    Returns the first successful response or re-raises the final HTTPStatusError
-    after `max_retries` attempts on RETRY_STATUSES.
+    Retries only on RETRY_STATUSES; non-retryable HTTPStatusError propagates
+    immediately. After exhausting retries on 429, raises RateLimitError;
+    otherwise re-raises the original HTTPStatusError.
     """
-    last_exc: Exception | None = None
-    for attempt in range(max_retries + 1):
-        try:
-            response = await fn()
-            if response.status_code not in RETRY_STATUSES:
+    try:
+        async for attempt in stamina.retry_context(
+            on=_is_retryable_http_status,
+            attempts=max_retries + 1,
+            wait_initial=base_backoff_seconds,
+            wait_jitter=base_backoff_seconds * 0.5,
+            wait_exp_base=2,
+        ):
+            with attempt:
+                response = await fn()
                 response.raise_for_status()
                 return response
-            response.raise_for_status()
-        except httpx.HTTPStatusError as exc:
-            last_exc = exc
-            if exc.response.status_code not in RETRY_STATUSES:
-                raise
-            if attempt == max_retries:
-                if exc.response.status_code == 429:
-                    raise RateLimitError(str(exc)) from exc
-                raise
-            backoff = base_backoff_seconds * (2**attempt)
-            logger.warning(
-                "Retrying after %s (attempt %d/%d, backoff=%.2fs)",
-                exc,
-                attempt + 1,
-                max_retries,
-                backoff,
-            )
-            await asyncio.sleep(backoff)
-    assert last_exc is not None
-    raise last_exc
+    except httpx.HTTPStatusError as exc:
+        if exc.response.status_code == 429:
+            raise RateLimitError(str(exc)) from exc
+        raise
+    raise RuntimeError("unreachable: stamina retry_context guarantees return or raise")
