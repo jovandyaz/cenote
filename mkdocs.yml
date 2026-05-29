@@ -58,6 +58,7 @@ nav:
       - stores: api/stores.md
       - retrievers: api/retrievers.md
       - eval: api/eval.md
+      - pipeline: api/pipeline.md
   - Extending cenote:
       - Custom embedder: extending/custom-embedder.md
       - Custom chunker: extending/custom-chunker.md

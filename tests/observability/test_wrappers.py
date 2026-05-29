@@ -184,3 +184,96 @@ async def test_reranker_exception_recorded_and_reraised() -> None:
 def test_noop_span_context_is_acceptable_spancontext_type() -> None:
     span: SpanContext = NoopSpanContext()
     span.set_attribute("k", "v")
+
+
+@pytest.mark.asyncio
+async def test_traced_vector_store_emits_search_span() -> None:
+    """search() emits a 'store.search' span with namespace + limit + result_count."""
+    from cenote.observability.wrappers import TracedVectorStore
+    from cenote.stores.memory import InMemoryVectorStore
+
+    inner = InMemoryVectorStore(dimensions=4)
+    tracer = StubTracer()
+    traced = TracedVectorStore(inner, tracer)
+
+    results = await traced.search([0.1, 0.2, 0.3, 0.4], namespace="ns", limit=5)
+    assert results == []
+
+    span_names = [name for name, _ in tracer.spans]
+    assert "store.search" in span_names
+    (_, search_ctx) = next((n, c) for n, c in tracer.spans if n == "store.search")
+    assert search_ctx.attributes["namespace"] == "ns"
+    assert search_ctx.attributes["limit"] == 5
+    assert search_ctx.attributes["result_count"] == 0
+
+
+@pytest.mark.asyncio
+async def test_traced_vector_store_emits_upsert_span() -> None:
+    """upsert() emits a 'store.upsert' span with namespace + batch_size."""
+    from cenote.observability.wrappers import TracedVectorStore
+    from cenote.stores.memory import InMemoryVectorStore
+
+    inner = InMemoryVectorStore(dimensions=4)
+    tracer = StubTracer()
+    traced = TracedVectorStore(inner, tracer)
+
+    chunks = [
+        EmbeddedChunk(
+            chunk=Chunk(
+                id=f"c{i}",
+                document_id="d",
+                content=f"t{i}",
+                position=i,
+                content_hash=f"h{i}",
+            ),
+            embedding=[0.1, 0.2, 0.3, 0.4],
+            embedding_model="mock",
+            dimensions=4,
+        )
+        for i in range(3)
+    ]
+    await traced.upsert(chunks, namespace="ns")
+
+    upsert_ctx = next(c for n, c in tracer.spans if n == "store.upsert")
+    assert upsert_ctx.attributes["namespace"] == "ns"
+    assert upsert_ctx.attributes["batch_size"] == 3
+
+
+@pytest.mark.asyncio
+async def test_traced_vector_store_records_exception_on_failure() -> None:
+    """Inner exception in search() is recorded on span before re-raising."""
+    from cenote.observability.wrappers import TracedVectorStore
+
+    class _BrokenStore:
+        async def upsert(self, embedded_chunks: list[EmbeddedChunk], namespace: str) -> None:
+            raise RuntimeError("nope")
+
+        async def search(
+            self,
+            query_vector: list[float],
+            namespace: str,
+            limit: int = 10,
+            filter: dict[str, Any] | None = None,
+        ) -> list[RetrievalResult]:
+            raise RuntimeError("nope")
+
+        async def delete(self, chunk_ids: list[str], namespace: str) -> None:
+            raise RuntimeError("nope")
+
+        async def delete_namespace(self, namespace: str) -> None:
+            raise RuntimeError("nope")
+
+        async def get_all_chunks(self, namespace: str, filter: dict[str, Any] | None = None) -> Any:
+            if False:
+                yield
+            raise RuntimeError("nope")
+
+    tracer = StubTracer()
+    traced = TracedVectorStore(_BrokenStore(), tracer)  # type: ignore[arg-type]
+
+    with pytest.raises(RuntimeError):
+        await traced.search([0.1] * 4, namespace="ns")
+
+    search_ctx = next(c for n, c in tracer.spans if n == "store.search")
+    assert len(search_ctx.exceptions) == 1
+    assert isinstance(search_ctx.exceptions[0], RuntimeError)
