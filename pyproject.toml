@@ -76,6 +76,7 @@ dev = [
     "cyclonedx-py>=1.0.1",
     "hypothesis>=6.155",
     "pytest-benchmark>=5.2",
+    "mike>=2.2",
 ]
 
 [tool.ruff]
