@@ -95,6 +95,20 @@ Pin Docker images in CI by digest (see ADR-0002). Document the `uv export` step 
 - **Reproducible builds** (ADR Step 4): already satisfied by Phase 0 (Docker digest pinning per ADR-0002) and `uv.lock` committed at repo root. No new action needed.
 - **mike adoption**: deferred to maintainer action per ADR-0004 cross-reference; runbook at [docs/operations.md](../../docs/operations.md).
 
+### 2026-05-29 — v0.4.0 release lessons
+
+The first end-to-end release through this stack surfaced three integration gotchas that the original Phase 5 wiring did not anticipate:
+
+1. **release-please anti-loop**: when release-please-action creates a tag via `GITHUB_TOKEN`, GitHub Actions anti-loop protection suppresses the tag-push event. The standalone `release.yml` (triggered on `tags: ['v*']`) never auto-fires. Workaround for v0.4.0: `gh workflow run release.yml --ref v0.4.0`. Permanent fix landed in the same release: `release-please.yml` now defines a second `publish` job that runs conditionally on the `release_created` output of `release-please-action` — no separate tag-push event needed. `release.yml` keeps only `workflow_dispatch` as a manual fallback.
+
+2. **`release.yml` permissions gap**: the original `permissions: contents: read` was insufficient for `softprops/action-gh-release` to attach the SBOM to an existing release. Symptom: `HttpError: Resource not accessible by integration`. Fix: change to `contents: write`. The chained `publish` job in the new `release-please.yml` declares the same combo (`contents: write` for SBOM + `id-token: write` for Trusted Publishing).
+
+3. **`uv.lock` drifts after release-please bumps version**: release-please updates `pyproject.toml` version (0.3.0 → 0.4.0) but does NOT regenerate `uv.lock`, so `uv sync --locked` (in the `security-audit` job) fails after merge. Workaround for v0.4.0: maintainer ran `uv lock` locally + pushed. Longer-term fix (deferred to v0.5.0+): add a step inside the release-please.yml `release-please` job that runs `uv lock` on the open PR branch and pushes back, OR teach release-please to update `uv.lock` via the `extra-files` config. Currently neither is wired; expect the same manual step at every release until then.
+
+4. **v0.4.0 tag force-updated**: the initial v0.4.0 tag (at `2dbe105`, the merge commit) was created before the `contents: write` fix landed. To re-publish through the corrected `release.yml`, the tag was force-updated to `bfe5234` (the permissions-fix commit). Force-updating tags is normally a smell, but acceptable here because v0.4.0 had not yet been published to PyPI when the rewrite happened.
+
+Net effect: v0.4.0 shipped to PyPI on 2026-05-29 with Sigstore attestations + SBOM attached to the GitHub Release. Documented at [docs/proofs/v0.4.0_ship_report.md](../proofs/v0.4.0_ship_report.md).
+
 ## References
 
 - [release-please](https://github.com/googleapis/release-please)
