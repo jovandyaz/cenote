@@ -79,6 +79,13 @@ Pin Docker images in CI by digest (see ADR-0002). Document the `uv export` step 
 - **SBOM**: generated via `./scripts/generate_sbom.sh` (introduced Phase 0) and uploaded to the GitHub Release via `softprops/action-gh-release@v3`.
 - **release-please + reproducible builds + gitlint**: deferred to Phase 5 per the foundation-hardening plan.
 
+### 2026-05-28 — Phase 5 execution
+
+- **release-please-action wired** (v5.0.0): `release-please-config.json` + `.release-please-manifest.json` + `.github/workflows/release-please.yml`. Uses `pull-request-title-pattern: "chore: release ${version}"` so the eventual squash-merge commit on `main` passes the project gitlint regex (allowed prefix `chore`).
+- **gitlint commit-msg hook** (v0.19.1): added to `.pre-commit-config.yaml` with project regex `^(feat|fix|chore|docs|test|refactor|perf|ci|build|style)(\([\w-]+\))?: .+`. Activated locally via `pre-commit install --hook-type commit-msg`. Note: the original Phase 5 implementation shipped a double-backslash regex that the wrap-up adversarial verify caught and corrected before commit.
+- **Reproducible builds** (ADR Step 4): already satisfied by Phase 0 (Docker digest pinning per ADR-0002) and `uv.lock` committed at repo root. No new action needed.
+- **mike adoption**: deferred to maintainer action per ADR-0004 cross-reference; runbook at [docs/operations.md](../../docs/operations.md).
+
 ## References
 
 - [release-please](https://github.com/googleapis/release-please)

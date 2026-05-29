@@ -113,6 +113,8 @@ What is deferred until Phase 5:
 - One-time `gh api repos/<owner>/<repo>/pages -X POST -f source[branch]=gh-pages -f source[path]=/` (or equivalent UI flip).
 - Initial bootstrap deploy as `dev` alias on the first push after migration.
 
+Note (added 2026-05-28): the operational runbook for executing this migration (when ready) lives at [docs/operations.md](../../docs/operations.md). It contains the gh CLI commands to switch the Pages source, the target docs.yml shape, bootstrap commands, and rollback procedure.
+
 ## References
 
 - [mike](https://github.com/jimporter/mike) — docs versioning
