@@ -11,8 +11,52 @@ permissions:
 jobs:
   release-please:
     runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.rp.outputs.release_created }}
+      tag_name: ${{ steps.rp.outputs.tag_name }}
     steps:
       - uses: googleapis/release-please-action@v5.0.0
+        id: rp
         with:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
+
+  publish:
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created }}
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/cenote-core
+    permissions:
+      contents: write  # softprops/action-gh-release attaches SBOM asset
+      id-token: write  # Trusted Publishing + PEP 740 Sigstore attestations
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.release-please.outputs.tag_name }}
+      - uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+      - run: uv python install 3.12
+      - run: uv sync --all-extras
+      - name: Build wheel + sdist
+        run: uv build
+      - name: Verify build in isolated venv
+        run: |
+          uv venv /tmp/verify
+          uv pip install --python /tmp/verify/bin/python dist/cenote_core-*.whl
+          /tmp/verify/bin/python -c "import cenote; print(cenote.__version__)"
+      - name: Generate CycloneDX SBOM
+        run: ./scripts/generate_sbom.sh
+      - name: Attach SBOM to GitHub Release
+        uses: softprops/action-gh-release@v3
+        with:
+          files: sbom.cdx.json
+          tag_name: ${{ needs.release-please.outputs.tag_name }}
+          fail_on_unmatched_files: true
+      # Sigstore signing is auto-applied by pypa/gh-action-pypi-publish via PEP 740.
+      - name: Publish to PyPI via Trusted Publishing
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/

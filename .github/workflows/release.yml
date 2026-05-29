@@ -1,8 +1,8 @@
 name: Release
+# Manual fallback for re-running publish on an existing tag.
+# Normal automatic flow runs inside .github/workflows/release-please.yml.
 
 on:
-  push:
-    tags: ['v*']
   workflow_dispatch:
 
 permissions:
