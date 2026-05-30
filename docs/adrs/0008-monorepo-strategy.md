@@ -38,16 +38,32 @@ cenote/                           # repo root
 │   ├── cenote-core/              # this current package
 │   │   ├── pyproject.toml        # name = "cenote-core"
 │   │   └── src/cenote/...
-│   ├── cenote-agent/             # M2.0+
+│   ├── cenote-agent/             # M2.0+ — LangGraph runtime
 │   │   ├── pyproject.toml        # name = "cenote-agent"
 │   │   │                         #   deps: cenote-core = { workspace = true }
 │   │   └── src/cenote_agent/...
+│   ├── cenote-bench/             # M1.4+ — extracted from cenote.bench when 3+ datasets
+│   ├── cenote-cli/               # already seeded by v0.5.0 (cenote bench miracl-es)
+│   ├── cenote-rerankers-voyage/  # future — split from core when Reranker impl lands
+│   ├── cenote-rerankers-cohere/  # future
+│   ├── cenote-llm-openai/        # future — when we add provider beyond Anthropic
+│   ├── cenote-llm-bedrock/       # future — AWS Bedrock
+│   ├── cenote-llm-vertex/        # future — Google Vertex AI
 │   ├── cenote-integrations-pinecone/   # future
-│   ├── cenote-integrations-qdrant/     # future
-│   └── cenote-cli/                     # future — diagnostic CLI
+│   └── cenote-integrations-qdrant/     # future
 ├── docs/                         # shared (mkdocs + ADRs)
 └── .github/workflows/            # per-package matrix + monorepo-aware
 ```
+
+### 2026-05-29 — package list expansion
+
+Adopted in v0.5.0 planning conversation: **cenote-bench**, **cenote-rerankers-{voyage,cohere}**, **cenote-llm-{openai,bedrock,vertex}** added to the monorepo target. Rationale per package:
+
+- **cenote-bench**: `cenote.bench` shipped in v0.5.0 (MIRACL-es harness, Pyserini-2cr reporting, CLI). Extract when ≥3 datasets land (BEIR, MTEB-es slice, MIRACL-es). The bench infra has its own dependency footprint (ranx, huggingface_hub, datasets) that doesn't belong in core's runtime path.
+- **cenote-rerankers-{voyage,cohere}**: keeps core lean — only the `Reranker` Protocol stays in core; concrete vendor impls split out so consumers don't pull in optional vendor SDKs they don't use.
+- **cenote-llm-{openai,bedrock,vertex}**: currently `cenote.llm` ships an Anthropic-only client. When demand for a second provider lands, the pattern is to split per-provider packages (mirrors `langchain-anthropic` / `langchain-openai`) rather than fold them into core.
+
+All seven new packages stay deferred until their use case is real (no speculative scaffolding).
 
 Workspace root `pyproject.toml`:
 
