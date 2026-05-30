@@ -7,7 +7,7 @@
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
-Production-grade RAG primitives for Python — Protocol-based, multi-tenant by design, type-strict from day one. Targeting Spanish/LATAM workloads from M1.1.
+Production-grade RAG primitives for Python — Protocol-based, multi-tenant by design, type-strict from day one. Spanish-first since M1.1; the foundation for vertical agent products targeting LATAM regulated industries.
 
 ## Why cenote
 
@@ -32,20 +32,25 @@ cenote is a focused library, not a universal RAG toolkit. Don't choose it when:
 
 ## Status
 
-| Module | M1.0 (released) | M1.1+ (planned) |
+Shipped through **v0.5.0** (2026-05-29). Reflects actual code state, not roadmap intent.
+
+| Module | Shipped | Roadmap |
 |---|---|---|
-| `cenote.models` | ✓ Document, Chunk, EmbeddedChunk, RetrievalResult | — |
-| `cenote.errors` | ✓ CenoteError hierarchy | — |
-| `cenote.types` | ✓ Vector, Namespace, ModelId, ContentHash | — |
-| `cenote.chunkers` | ✓ Chunker Protocol, RecursiveCharacterChunker | MarkdownChunker, token-aware chunking |
-| `cenote.embedders` | ✓ Embedder Protocol, MockEmbedder, VoyageEmbedder, CohereEmbedder, EmbeddingCache, InMemoryCache, CachedEmbedder | Streaming embed, SqliteCache, RedisCache |
-| `cenote.stores` | ✓ VectorStore Protocol, InMemoryVectorStore, PgVectorStore | — |
-| `cenote.retrievers` | ✓ Retriever Protocol, VectorRetriever | BM25Retriever, HybridRetriever (RRF), Spanish-aware tokenizer |
-| `cenote.rerankers` | ✓ Reranker Protocol (no impl) | VoyageReranker, CohereReranker |
-| `cenote.observability` | ✓ Tracer Protocol, NoopTracer | OTel adapter, Langfuse adapter |
-| `cenote.eval` | ✓ precision_at_k, recall_at_k, mean_reciprocal_rank | DeepEval integration, bilingual EN/ES dataset |
-| `cenote.bench` | ✓ MiraclLoader, ranx-backed nDCG/Recall, RRF fusion, BenchRunner, Pyserini-2cr report, `cenote bench miracl-es` CLI ([docs](docs/benchmarks.md)) | BEIR sanity check, MTEB ES retrieval slice |
-| `cenote.llm` | — | Anthropic Claude wrapper with prompt-cache awareness |
+| `cenote.models` | Document, Chunk, EmbeddedChunk, RetrievalResult, Message | — |
+| `cenote.errors` | CenoteError hierarchy (Configuration, RateLimit, DimensionMismatch, Migration, LLM…) | — |
+| `cenote.types` | Vector, Namespace, ModelId, ContentHash | — |
+| `cenote.chunkers` | Chunker Protocol, RecursiveCharacterChunker, MarkdownChunker | Token-aware chunking |
+| `cenote.embedders` | Embedder Protocol, MockEmbedder, VoyageEmbedder, CohereEmbedder, CachedEmbedder, EmbeddingCache Protocol, InMemoryCache, SqliteCache | RedisCache, streaming embed |
+| `cenote.stores` | VectorStore Protocol, InMemoryVectorStore, PgVectorStore (HNSW + SET LOCAL transactional) | — |
+| `cenote.retrievers` | Retriever Protocol, VectorRetriever, BM25Retriever (LRU-cached, picklable), HybridRetriever (RRF fusion) | — |
+| `cenote.tokenizers` | Tokenizer Protocol, SpanishTokenizer (Snowball stemmer, pickle-safe since v0.4.1) | — |
+| `cenote.rerankers` | Reranker Protocol, VoyageReranker, CohereReranker | — |
+| `cenote.observability` | Tracer Protocol, NoopTracer, OTel adapter, Langfuse adapter, TracedVectorStore wrapper | — |
+| `cenote.pipeline` | IndexingPipeline, IndexingProgress | Resume/retry-failed-batches API |
+| `cenote.eval` | precision_at_k, recall_at_k, mean_reciprocal_rank, RetrievalBenchmark harness | DeepEval integration, bilingual EN/ES golden dataset |
+| `cenote.bench` ([docs](docs/benchmarks.md)) | MiraclLoader, ranx-backed nDCG/Recall, RRF fusion, BenchRunner, Pyserini-2cr report, `cenote bench miracl-es` CLI | BEIR sanity check, MTEB-es retrieval slice, real MIRACL-es numbers (Phase F) |
+| `cenote.llm` | LLMClient Protocol, AnthropicLLM (with prompt-cache awareness), NoopLLM | Tool use, `cenote-llm-{openai,bedrock,vertex}` as separate packages per [ADR-0008](docs/adrs/0008-monorepo-strategy.md) |
+| `cenote.cli` | `cenote bench miracl-es` (Typer) | Additional subcommands as needs emerge |
 
 ## Quickstart
 
@@ -132,21 +137,35 @@ GitHub renders `.drawio` files inline natively (since 2024). Click any link abov
 - ✅ **M1.0** (released as v0.1.0) — Core primitives: chunker, embedders, stores, retrievers, future-API stubs
 - ✅ **M1.1** (released as v0.2.0) — MarkdownChunker, BM25 + Hybrid retrievers, Spanish-aware tokenizer, concrete rerankers, RetrievalBenchmark
 - ✅ **M1.2** (released as v0.3.0) — OTel + Langfuse adapters, Traced wrappers, AnthropicLLM with prompt caching, SqliteCache
-- 📋 **M1.3+** — Tool use in AnthropicLLM, RedisCache, OpenAI compat, agent primitives, CFDI domain pack
+- ✅ **Foundation hardening** (v0.4.0) — Sigstore + SBOM + Trusted Publishing, release-please, gitlint, observability wrappers, hardening pass on retrievers (LRU cache + invalidation), HNSW SET LOCAL fix
+- ✅ **Bug fixes** (v0.4.1) — SpanishTokenizer pickle-safe, `_http.retrying` honors Retry-After header, embedder `max_retries` raised to 6
+- ✅ **Retrieval benchmark harness** (v0.5.0) — `cenote.bench` module with MIRACL-es loader, ranx-backed metrics, RRF fusion, Pyserini-2cr report generator, and `cenote bench miracl-es` CLI ([docs](docs/benchmarks.md), [ADR-0009](docs/adrs/0009-miracl-es-benchmark.md))
+- 📋 **M1.3+** — Tool use in AnthropicLLM, RedisCache, agent primitives, CFDI domain pack, MIRACL-es Phase F (real numbers)
 
 [See M1.1 baselines](docs/benchmarks/2026-05-27-m1-1-baselines.md) for the
-Spanish BM25 + hybrid retrieval scaffold. Real numbers ship in 0.2.1.
+Spanish BM25 + hybrid retrieval scaffold. Full Pyserini-2cr table follows after
+the v0.5.0 Phase F embedding pass — see [docs/benchmarks.md](docs/benchmarks.md).
 
 See [CHANGELOG.md](CHANGELOG.md) for a granular record of what shipped when.
 
 ## Downstream products
 
-cenote is the shared core for two products in development:
+cenote is the shared core for a portfolio of vertical agents serving LATAM regulated industries. Each downstream product stays in its own repository (per [ADR-0008](docs/adrs/0008-monorepo-strategy.md)) and consumes cenote-core via PyPI.
 
+**Committed** (Tier A):
+
+- **cfdi-agent** — Accounting reconciliation + CFDI 4.0 compliance for Mexican PYMEs *(first vertical)*
+- **kyc-agent** — KYC/AML for LATAM fintechs over CNBV, UIF, Banxico, DOF, PEP lists
+- **bank-reco-agent** — Bank statement ↔ CFDI reconciliation (composes with cfdi-agent for higher ARPU)
 - **knowtis-ai** — RAG + research agent over the Knowtis notes platform
-- **cfdi-agent** — Accounting reconciliation + CFDI 4.0 compliance for Mexican PYMEs
 
-Each downstream product validates cenote from opposite ends: knowtis-ai favors creative synthesis, cfdi-agent demands deterministic correctness with audit trails.
+**Validated post-Tier-A** (in research priority order — see [docs/strategy/REDACTED.md](docs/strategy/REDACTED.md)):
+
+- **jurisprudencia-agent** — SCJN, Corte Constitucional CO, CSJN AR retrieval with audit-grade grounding
+- **cofepris-agent** — Pharma regulatory intelligence over COFEPRIS, INVIMA, ANVISA, ANMAT
+- **nomina-agent** (validate first) — LFT / IMSS / INFONAVIT copilot over existing payroll stacks
+
+Each vertical validates cenote-core from a different angle: deterministic-correctness (cfdi, kyc, bank-reco), creative synthesis (knowtis-ai, jurisprudencia), regulatory tracking (cofepris).
 
 ## License
 
