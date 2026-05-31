@@ -159,7 +159,7 @@ cenote is the shared core for a portfolio of vertical agents serving LATAM regul
 - **bank-reco-agent** — Bank statement ↔ CFDI reconciliation (composes with cfdi-agent for higher ARPU)
 - **knowtis-ai** — RAG + research agent over the Knowtis notes platform
 
-**Validated post-Tier-A** (in research priority order — see [docs/strategy/REDACTED.md](docs/strategy/REDACTED.md)):
+**Validated post-Tier-A** (priority order based on internal analysis):
 
 - **jurisprudencia-agent** — SCJN, Corte Constitucional CO, CSJN AR retrieval with audit-grade grounding
 - **cofepris-agent** — Pharma regulatory intelligence over COFEPRIS, INVIMA, ANVISA, ANMAT
