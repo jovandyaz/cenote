@@ -8,6 +8,81 @@ Versioning: [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
 > **Pre-1.0 disclaimer.** APIs may break in any minor release until `1.0.0` ships.
 > Patch releases (`0.1.0` → `0.1.1`) are bug fixes only.
 
+## [0.6.0](https://github.com/jovandyaz/cenote/compare/v0.5.0...v0.6.0) (2026-05-31)
+
+
+### Added
+
+* **bench:** MIRACL-es harness with ranx metrics and Pyserini-2cr report ([c21fd96](https://github.com/jovandyaz/cenote/commit/c21fd96f6e8c93c0db385dbb1171c04327cd5cd9))
+* **chunkers:** add Chunker protocol and RecursiveCharacterChunker ([49ad485](https://github.com/jovandyaz/cenote/commit/49ad485c4faf962c7ec3e2860d21e6bdd458006f))
+* **coverage:** add PgVectorStore helper unit tests and Codecov upload (unit+integration flags) ([ff514d5](https://github.com/jovandyaz/cenote/commit/ff514d515feff8541e486ab71cd058632a838ea5))
+* **demos:** add quickstart demo and README quickstart ([b79d3a6](https://github.com/jovandyaz/cenote/commit/b79d3a6249c126a4429023cf95428f37e2361ed9))
+* **docs:** add mkdocs-material site with auto-generated API reference and GH Pages deploy ([1546afd](https://github.com/jovandyaz/cenote/commit/1546afde730ff0d06584be4633c9182b2636caef))
+* **embedders:** add Embedder protocol and unit-norm MockEmbedder ([c112565](https://github.com/jovandyaz/cenote/commit/c1125655b74331422ce7f69a0d29f4fc3e019016))
+* **embedders:** add EmbeddingCache protocol, InMemoryCache, CachedEmbedder ([71267c6](https://github.com/jovandyaz/cenote/commit/71267c6af1643551030852dff3d067db0968f44c))
+* **embedders:** add VoyageEmbedder and CohereEmbedder (multilingual) ([1cbbc85](https://github.com/jovandyaz/cenote/commit/1cbbc856a1de01bde686ef5a2721175de9c06b8e))
+* **errors:** add CenoteError hierarchy and replace bare ValueError raises ([ffdf25d](https://github.com/jovandyaz/cenote/commit/ffdf25daa24d4b82bc55c98ccb1bb400f1095c0c))
+* **eval:** RetrievalBenchmark + bundled datasets + baseline scaffold (M1.1 phase 4) ([3269cf3](https://github.com/jovandyaz/cenote/commit/3269cf39235c1f2fd58873eec7148da5e6a8d3a3))
+* **examples:** add custom_embedder and pgvector_setup cookbook examples ([73151dd](https://github.com/jovandyaz/cenote/commit/73151dd5b07b48a4f76de6c38381285d845cabec))
+* future-API stubs (Reranker, Tracer, eval metrics) ([1718579](https://github.com/jovandyaz/cenote/commit/171857911d0e55a29984fa1162f743d065f40496))
+* **llm:** LLMClient Protocol + AnthropicLLM with prompt caching (M1.2 phase 3+4) ([5b1336a](https://github.com/jovandyaz/cenote/commit/5b1336a61d5c58dfffde3955eb068c905dcc1887))
+* **logging:** add structured logging across all cenote modules ([589b58a](https://github.com/jovandyaz/cenote/commit/589b58a0d420ef1366d76aea22c0002b9a2b9c98))
+* M1.1 phase 1 — get_all_chunks, SpanishTokenizer, MarkdownChunker ([c1f4916](https://github.com/jovandyaz/cenote/commit/c1f4916f41508b5bbc29de53f725d021a10cadb0))
+* M1.1 phase 2 — BM25Retriever + Voyage/Cohere rerankers via shared _HTTPReranker ([916ef42](https://github.com/jovandyaz/cenote/commit/916ef42cab69a1051507cc19fa20741f6fb5011b))
+* M1.2 phase 1 — Tracer Protocol v2 + SqliteCache with WAL + set_many bulk API ([761d98b](https://github.com/jovandyaz/cenote/commit/761d98b087c2b178c5f29f805a428ea418612432))
+* **models:** add Document, Chunk, EmbeddedChunk, RetrievalResult ([9bb50df](https://github.com/jovandyaz/cenote/commit/9bb50df751deb097e0364376c4a254bb997627f9))
+* **observability:** OTel + Langfuse adapters + Traced wrappers (M1.2 phase 2) ([f17b4bc](https://github.com/jovandyaz/cenote/commit/f17b4bc3bc64d7ec8e0f800d45d7429e0a5e96e9))
+* phase 4 primitives — TracedVectorStore + IndexingPipeline ([7679b89](https://github.com/jovandyaz/cenote/commit/7679b89381e7d856042076f7dc5cd74cb8fb72fc))
+* project scaffolding (uv, ruff, mypy, pytest, pre-commit, CI matrix, Apache-2.0) ([fe8951c](https://github.com/jovandyaz/cenote/commit/fe8951c8c837b333bb30a55fe91bb00f8172090f))
+* **release:** add PyPI release workflow with OIDC trusted publishing ([e4a5086](https://github.com/jovandyaz/cenote/commit/e4a5086419e5677871928381f4c68dadbdf11fa6))
+* **retrievers:** add Retriever protocol and VectorRetriever ([00c4d8c](https://github.com/jovandyaz/cenote/commit/00c4d8c6e84a3ade16bb2649c559a49f29456f64))
+* **retrievers:** HybridRetriever with Reciprocal Rank Fusion (M1.1 phase 3) ([6bf94dc](https://github.com/jovandyaz/cenote/commit/6bf94dc779813c33a5e9a6687f9a719acc3799f9))
+* **stores:** add PgVectorStore with transactions, migrations tracking, HNSW tuning, CI integration job ([986c861](https://github.com/jovandyaz/cenote/commit/986c861d6d4201aacdba6359177cc3348ff60ba3))
+* **stores:** add VectorStore protocol and InMemoryVectorStore ([280cf10](https://github.com/jovandyaz/cenote/commit/280cf1078fc1788d70fba0dadd4cdeb687e05b2c))
+* **types:** add cenote.types aliases and adopt Vector in public signatures ([969ea4b](https://github.com/jovandyaz/cenote/commit/969ea4be5ce61b22df0ec02471e5bc1b8fe71ded))
+
+
+### Fixed
+
+* **ci:** adapt migrations test to read disk + drop pycenote from pip-audit ([8b85f51](https://github.com/jovandyaz/cenote/commit/8b85f5163c8f6ba1ae4a4b533ae7a6f1e43a33b8))
+* **ci:** isolated venv for release verify + auto-enable GH Pages in docs deploy ([35a91cf](https://github.com/jovandyaz/cenote/commit/35a91cf6cbb8807b8a2b07eafbb811a42b3fdd77))
+* **ci:** unblock CI on main (lint import order, pip-audit hashed deps, pgvector PK) ([4835281](https://github.com/jovandyaz/cenote/commit/4835281fae98b1f8fdc475ae199b6611bdec0051))
+* **ci:** use uv export --no-emit-project to exclude pycenote from pip-audit ([787303d](https://github.com/jovandyaz/cenote/commit/787303d0cd0755f6a0e509e42ac374bc2807b8a3))
+* **compose:** pin project name to cenote (was deriving from dir) ([b9f5b66](https://github.com/jovandyaz/cenote/commit/b9f5b66deee0ae708a38ca1917de3a6006a7b04d))
+* **embedders:** honor Retry-After header, raise default max_retries to 6 ([e867653](https://github.com/jovandyaz/cenote/commit/e8676538fe981eb39d883466e470f7a019cfa054))
+* phase 4 bug fixes — HNSW tx wrap, hybrid resilience, BM25 LRU+invalidate ([fedf797](https://github.com/jovandyaz/cenote/commit/fedf7972d6e0862c475f126ebbf1fe3ed465ff5e))
+* **tokenizers:** make SpanishTokenizer pickle-safe via __getstate__ ([c734dfa](https://github.com/jovandyaz/cenote/commit/c734dfa228d6dd90166c71c9963e7ded485d190b))
+* **verify:** correct grep pattern in phase2.sh check 3 (pytest --quiet output) ([4c91dcc](https://github.com/jovandyaz/cenote/commit/4c91dcc679ee5068d26a15657b6cba9da7abe5cb))
+* **verify:** remove hardcoded user PATH from phase verify scripts ([154c960](https://github.com/jovandyaz/cenote/commit/154c960b235f32ee355b92c526f91d4bfc45f23c))
+
+
+### Changed
+
+* phase 4 retry+rate-limit — stamina with jitter + aiolimiter wrapper ([30fccf2](https://github.com/jovandyaz/cenote/commit/30fccf24aa4c1c9769d29544fafd8f7de764b6c1))
+
+
+### Documentation
+
+* add CONTRIBUTING.md with dev setup and release process ([7ae078e](https://github.com/jovandyaz/cenote/commit/7ae078e628f92a4a2f54506f5e2b40ae2acfe22e))
+* **adrs:** add foundational ADRs 0001-0008 ([05e8558](https://github.com/jovandyaz/cenote/commit/05e8558b2297436fbca19ec881452b32754d8b3e))
+* **adrs:** document release-please PR-create prerequisite in 0005 ([0c1dc7d](https://github.com/jovandyaz/cenote/commit/0c1dc7d957c30020fe499fd3d1b0930f8e77cf47))
+* **adrs:** document v0.4.0 release lessons in 0005 ([2b9e362](https://github.com/jovandyaz/cenote/commit/2b9e362b1ac24f6d74f5d5eb6a010d430a16a8e5))
+* **adrs:** expand 0008 monorepo with bench/rerankers/llm packages ([1514bc9](https://github.com/jovandyaz/cenote/commit/1514bc9f3d81bf2d1ee35d28ccb3a8ae91e0b01c))
+* **adrs:** note Phase 1 corrections (OSV reusable wf, Sigstore auto via pypa-publish) ([4cacf97](https://github.com/jovandyaz/cenote/commit/4cacf97b0c80c3cc0873f1361bf94ef159384932))
+* **adrs:** note Phase 3 mike deferral to Phase 5 in ADR-0004 ([88815b8](https://github.com/jovandyaz/cenote/commit/88815b851754138fc743bfd35eb82a55d9dfc6b2))
+* **adrs:** phase 5 implementation notes in 0004 and 0005 ([2d0c9d3](https://github.com/jovandyaz/cenote/commit/2d0c9d3a03d27a517224e8b1b8997bc4381a8355))
+* **bench:** add ADR-0009 + benchmarks.md scaffold + README row ([c2c77d2](https://github.com/jovandyaz/cenote/commit/c2c77d2b8f04a2d08ba8977bcd96a786acf910d1))
+* **changelog:** expand SqliteCache entry with WAL + set_many ([63a4832](https://github.com/jovandyaz/cenote/commit/63a4832d6f3344785ba8ebbdcf3bb3ee5138bb59))
+* **changelog:** record M1.0 future-API stubs entries ([9b2f774](https://github.com/jovandyaz/cenote/commit/9b2f774ad63f7376839d920cc2b39cbcc7db4e54))
+* **milestone:** mark M1.0 closed with acceptance criteria and deliverables note ([9f11e58](https://github.com/jovandyaz/cenote/commit/9f11e585ec89a6e9c46f6e44453e12edcb315333))
+* phase 3 — Definition of Done + ADRs index pages in mkdocs nav ([f8f80d3](https://github.com/jovandyaz/cenote/commit/f8f80d39e77514c5b60a0e628eebbdd69aacc008))
+* **plan:** add diagrams and skip other docs ([e4516b3](https://github.com/jovandyaz/cenote/commit/e4516b367ada6d38b4c69bf488d050a9836e663e))
+* project context, milestone brief, implementation plan, claude code config ([793100d](https://github.com/jovandyaz/cenote/commit/793100dc9d26231c0f3bde0e695af6e5b5a8f13b))
+* **proofs:** add phase 4 + 5 practical proof report ([a09fa7e](https://github.com/jovandyaz/cenote/commit/a09fa7ec9d50b8b7acddf25632a87c354c00203a))
+* **proofs:** add v0.4.0 ship report ([71d482b](https://github.com/jovandyaz/cenote/commit/71d482b1289d9c972420d7d1b51b9128e3fb14f7))
+* refresh README to v0.5.0 + add internal docs ([b09f664](https://github.com/jovandyaz/cenote/commit/b09f664cd401fb383ee4522a707bc5205b7b2f2f))
+* rewrite README with positioning, module status, extension guide, and roadmap ([fc9a973](https://github.com/jovandyaz/cenote/commit/fc9a97342329ac2152efabeecae17dd408c23cea))
+
 ## [0.5.0](https://github.com/jovandyaz/cenote/compare/v0.4.1...v0.5.0) (2026-05-29)
 
 
