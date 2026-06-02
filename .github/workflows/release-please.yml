@@ -15,12 +15,7 @@ jobs:
       release_created: ${{ steps.rp.outputs.release_created }}
       tag_name: ${{ steps.rp.outputs.tag_name }}
     steps:
-      # Use RELEASE_PLEASE_TOKEN (a fine-grained PAT with `contents:write` +
-      # `pull-requests:write`) if available; fall back to GITHUB_TOKEN. PRs
-      # opened/pushed with GITHUB_TOKEN do NOT trigger downstream workflows
-      # (documented GH Actions limitation), so CI checks never start until
-      # someone manually close+reopens the PR. A PAT lifts that restriction.
-      # See https://docs.github.com/en/actions/security-for-github-actions/security-guides/automatic-token-authentication#using-the-github_token-in-a-workflow
+      # PAT triggers downstream CI on PR push; GITHUB_TOKEN does not.
       - uses: googleapis/release-please-action@v5.0.0
         id: rp
         with:
@@ -28,11 +23,7 @@ jobs:
           manifest-file: .release-please-manifest.json
           token: ${{ secrets.RELEASE_PLEASE_TOKEN || secrets.GITHUB_TOKEN }}
 
-      # release-please bumps pyproject.toml [project].version but does NOT touch
-      # uv.lock's self-reference (e.g. cenote-core's own version stays stale).
-      # CI's `uv sync --locked` then fails with "lockfile needs to be updated".
-      # We push a follow-up commit to the release-please PR branch so the PR
-      # already contains a synced lockfile by the time it's reviewed and merged.
+      # release-please bumps pyproject but not uv.lock self-reference; sync it on the PR branch.
       - name: Checkout release-please PR branch (if open)
         if: steps.rp.outputs.prs_created == 'true' || steps.rp.outputs.prs
         uses: actions/checkout@v6
