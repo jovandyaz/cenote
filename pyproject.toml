@@ -39,6 +39,14 @@ Repository = "https://github.com/jovandyaz/cenote"
 Issues = "https://github.com/jovandyaz/cenote/issues"
 Changelog = "https://github.com/jovandyaz/cenote/blob/main/CHANGELOG.md"
 
+[tool.uv]
+# Force transitive dependency versions to dodge known CVEs.
+# Bumps are validated against CI's pip-audit pass; remove when upstream
+# (deepeval -> inscriptis, jsonschema -> validation) ships a fix.
+constraint-dependencies = [
+    "lxml>=6.1.0",  # CVE PYSEC-2026-87 in 6.0.4
+]
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
