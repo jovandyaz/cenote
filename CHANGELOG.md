@@ -8,6 +8,13 @@ Versioning: [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
 > **Pre-1.0 disclaimer.** APIs may break in any minor release until `1.0.0` ships.
 > Patch releases (`0.1.0` → `0.1.1`) are bug fixes only.
 
+## [0.6.1](https://github.com/jovandyaz/cenote/compare/v0.6.0...v0.6.1) (2026-06-02)
+
+
+### Fixed
+
+* **deps:** constrain lxml&gt;=6.1 to dodge cve pysec-2026-87 ([6ba01c8](https://github.com/jovandyaz/cenote/commit/6ba01c8e9f27b3682b50d5840055816dd677fd01))
+
 ## [0.6.0](https://github.com/jovandyaz/cenote/compare/v0.5.0...v0.6.0) (2026-05-31)
 
 
