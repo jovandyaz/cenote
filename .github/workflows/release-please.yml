@@ -21,6 +21,37 @@ jobs:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
 
+      # release-please bumps pyproject.toml [project].version but does NOT touch
+      # uv.lock's self-reference (e.g. cenote-core's own version stays stale).
+      # CI's `uv sync --locked` then fails with "lockfile needs to be updated".
+      # We push a follow-up commit to the release-please PR branch so the PR
+      # already contains a synced lockfile by the time it's reviewed and merged.
+      - name: Checkout release-please PR branch (if open)
+        if: steps.rp.outputs.prs_created == 'true' || steps.rp.outputs.prs
+        uses: actions/checkout@v6
+        with:
+          ref: release-please--branches--main--components--cenote-core
+          fetch-depth: 0
+      - name: Install uv
+        if: steps.rp.outputs.prs_created == 'true' || steps.rp.outputs.prs
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+      - name: Sync uv.lock to bumped version
+        if: steps.rp.outputs.prs_created == 'true' || steps.rp.outputs.prs
+        run: |
+          uv python install 3.12
+          uv lock
+          if git diff --quiet uv.lock; then
+            echo "uv.lock already in sync — nothing to commit"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add uv.lock
+          git commit -m "chore: sync uv.lock to bumped version"
+          git push
+
   publish:
     needs: release-please
     if: ${{ needs.release-please.outputs.release_created }}
