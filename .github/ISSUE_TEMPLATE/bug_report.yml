@@ -1,0 +1,38 @@
+name: Bug report
+description: Report a defect in cenote
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. **Do not** use issues for security vulnerabilities —
+        see [SECURITY.md](https://github.com/jovandyaz/cenote/blob/main/SECURITY.md).
+  - type: input
+    id: version
+    attributes:
+      label: cenote-core version
+      placeholder: "e.g. 0.6.3 (uv pip show cenote-core)"
+    validations:
+      required: true
+  - type: input
+    id: python
+    attributes:
+      label: Python version
+      placeholder: "e.g. 3.12.7"
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you expect, and what occurred instead?
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal reproduction
+      description: The smallest code or steps that trigger the bug.
+      render: python
+    validations:
+      required: true

@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use cenote, please cite it as below."
+title: "cenote-core"
+abstract: "Production-grade RAG primitives for Python — Protocol-based, multi-tenant by design, type-strict."
+type: software
+authors:
+  - family-names: "Díaz"
+    given-names: "Jovan"
+    alias: jovandyaz
+repository-code: "https://github.com/jovandyaz/cenote"
+url: "https://github.com/jovandyaz/cenote"
+license: Apache-2.0
+keywords:
+  - rag
+  - retrieval
+  - embeddings
+  - llm
+  - python

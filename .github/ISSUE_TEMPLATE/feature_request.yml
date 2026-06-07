@@ -1,0 +1,26 @@
+name: Feature request
+description: Propose a change (open this before sending a PR — see CONTRIBUTING)
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        cenote keeps a narrow surface. New top-level dependencies need discussion first
+        (see [CONTRIBUTING.md](https://github.com/jovandyaz/cenote/blob/main/CONTRIBUTING.md)).
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What can't you do today, and who needs it?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
