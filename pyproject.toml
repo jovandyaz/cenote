@@ -45,6 +45,7 @@ Changelog = "https://github.com/jovandyaz/cenote/blob/main/CHANGELOG.md"
 # (deepeval -> inscriptis, jsonschema -> validation) ships a fix.
 constraint-dependencies = [
     "lxml>=6.1.0",  # CVE PYSEC-2026-87 in 6.0.4
+    "aiohttp>=3.14.0",  # CVE-2026-34993, CVE-2026-47265 in 3.13.5 (via ir-datasets)
 ]
 
 [build-system]
