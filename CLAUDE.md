@@ -133,9 +133,9 @@ uv build                             # build wheel
 
 ## Current focus
 
-See `docs/00-first-milestone.md` for the active milestone scope. As of project start, we are building **M1.0 — Core Primitives**: chunkers, embedders, stores, retrievers.
+Shipped through **v0.6.1** (2026-06-02). M1.0–M1.2 are complete: core primitives (chunkers, embedders, stores, retrievers), Spanish-aware retrieval (BM25 + hybrid + tokenizer), rerankers, observability (OTel/Langfuse), `AnthropicLLM`, indexing pipeline, eval metrics, and the `cenote.bench` MIRACL-es harness. See `docs/00-first-milestone.md` for the original milestone brief and `CHANGELOG.md` for what shipped when.
 
-Do NOT start work on agents, eval, or observability yet. Those depend on the primitives being stable.
+Next is **M1.3+**: tool use in `AnthropicLLM`, `RedisCache`, agent primitives, a CFDI domain pack, and MIRACL-es Phase F (real numbers). Do NOT start M1.3 implementation until its scope is brainstormed and a milestone brief exists.
 
 ## When in doubt
 

@@ -32,7 +32,7 @@ cenote is a focused library, not a universal RAG toolkit. Don't choose it when:
 
 ## Status
 
-Shipped through **v0.5.0** (2026-05-29). Reflects actual code state, not roadmap intent.
+Shipped through **v0.6.1** (2026-06-02). Reflects actual code state, not roadmap intent.
 
 | Module | Shipped | Roadmap |
 |---|---|---|
@@ -140,6 +140,7 @@ GitHub renders `.drawio` files inline natively (since 2024). Click any link abov
 - ✅ **Foundation hardening** (v0.4.0) — Sigstore + SBOM + Trusted Publishing, release-please, gitlint, observability wrappers, hardening pass on retrievers (LRU cache + invalidation), HNSW SET LOCAL fix
 - ✅ **Bug fixes** (v0.4.1) — SpanishTokenizer pickle-safe, `_http.retrying` honors Retry-After header, embedder `max_retries` raised to 6
 - ✅ **Retrieval benchmark harness** (v0.5.0) — `cenote.bench` module with MIRACL-es loader, ranx-backed metrics, RRF fusion, Pyserini-2cr report generator, and `cenote bench miracl-es` CLI ([docs](docs/benchmarks.md), [ADR-0009](docs/adrs/0009-miracl-es-benchmark.md))
+- ✅ **Maintenance + security** (v0.6.0–v0.6.1) — release-please changelog consolidation and tooling cleanup, `lxml>=6.1` security pin (CVE PYSEC-2026-87)
 - 📋 **M1.3+** — Tool use in AnthropicLLM, RedisCache, agent primitives, CFDI domain pack, MIRACL-es Phase F (real numbers)
 
 [See M1.1 baselines](docs/benchmarks/2026-05-27-m1-1-baselines.md) for the
