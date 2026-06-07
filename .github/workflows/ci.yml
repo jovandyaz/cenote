@@ -16,7 +16,6 @@ permissions:
 jobs:
   lint-and-type:
     runs-on: ${{ matrix.os }}
-    # macOS/Windows are informational until proven consistently green; ubuntu gates.
     continue-on-error: ${{ matrix.os != 'ubuntu-latest' }}
     strategy:
       fail-fast: false
@@ -61,8 +60,7 @@ jobs:
 
   minimum-deps:
     name: Lowest-direct resolution (advisory)
-    # Advisory, not a merge gate: surfaces declared >= floors that no longer
-    # build/resolve (e.g. pystemmer 2.2.0 ships no wheels for modern Python).
+    # Surfaces too-low >= floors (e.g. pystemmer 2.2.0 has no modern wheels).
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
@@ -80,7 +78,6 @@ jobs:
 
   unit-tests:
     runs-on: ${{ matrix.os }}
-    # macOS/Windows are informational until proven consistently green; ubuntu gates.
     continue-on-error: ${{ matrix.os != 'ubuntu-latest' }}
     strategy:
       fail-fast: false
