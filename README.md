@@ -1,5 +1,6 @@
 # cenote
 
+[![PyPI](https://img.shields.io/pypi/v/cenote-core)](https://pypi.org/project/cenote-core/)
 [![CI](https://github.com/jovandyaz/cenote/actions/workflows/ci.yml/badge.svg)](https://github.com/jovandyaz/cenote/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/jovandyaz/cenote/branch/main/graph/badge.svg)](https://codecov.io/gh/jovandyaz/cenote)
 [![Docs](https://img.shields.io/badge/docs-mkdocs--material-blue)](https://jovandyaz.github.io/cenote/)
@@ -32,7 +33,7 @@ cenote is a focused library, not a universal RAG toolkit. Don't choose it when:
 
 ## Status
 
-Shipped through **v0.6.1** (2026-06-02). Reflects actual code state, not roadmap intent.
+Shipped through **M1.2** — core primitives, Spanish-aware retrieval, observability, LLM client, and the `cenote.bench` harness. The current released version is the PyPI badge above; see [CHANGELOG.md](CHANGELOG.md) for the full history. Reflects actual code state, not roadmap intent.
 
 | Module | Shipped | Roadmap |
 |---|---|---|
