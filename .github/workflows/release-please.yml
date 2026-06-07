@@ -16,7 +16,7 @@ jobs:
       tag_name: ${{ steps.rp.outputs.tag_name }}
     steps:
       # PAT triggers downstream CI on PR push; GITHUB_TOKEN does not.
-      - uses: googleapis/release-please-action@v5.0.0
+      - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
         id: rp
         with:
           config-file: release-please-config.json
@@ -26,14 +26,14 @@ jobs:
       # release-please bumps pyproject but not uv.lock self-reference; sync it on the PR branch.
       - name: Checkout release-please PR branch (if open)
         if: steps.rp.outputs.prs_created == 'true' || steps.rp.outputs.prs
-        uses: actions/checkout@v6
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
         with:
           ref: release-please--branches--main--components--cenote-core
           fetch-depth: 0
           token: ${{ secrets.RELEASE_PLEASE_TOKEN || secrets.GITHUB_TOKEN }}
       - name: Install uv
         if: steps.rp.outputs.prs_created == 'true' || steps.rp.outputs.prs
-        uses: astral-sh/setup-uv@v7
+        uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7
         with:
           enable-cache: true
       - name: Sync uv.lock to bumped version
@@ -62,10 +62,10 @@ jobs:
       contents: write  # softprops/action-gh-release attaches SBOM asset
       id-token: write  # Trusted Publishing + PEP 740 Sigstore attestations
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
         with:
           ref: ${{ needs.release-please.outputs.tag_name }}
-      - uses: astral-sh/setup-uv@v7
+      - uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7
         with:
           enable-cache: true
       - run: uv python install 3.12
@@ -80,13 +80,13 @@ jobs:
       - name: Generate CycloneDX SBOM
         run: ./scripts/generate_sbom.sh
       - name: Attach SBOM to GitHub Release
-        uses: softprops/action-gh-release@v3
+        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3
         with:
           files: sbom.cdx.json
           tag_name: ${{ needs.release-please.outputs.tag_name }}
           fail_on_unmatched_files: true
       # Sigstore signing is auto-applied by pypa/gh-action-pypi-publish via PEP 740.
       - name: Publish to PyPI via Trusted Publishing
-        uses: pypa/gh-action-pypi-publish@release/v1
+        uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b # release/v1
         with:
           packages-dir: dist/
