@@ -8,6 +8,13 @@ Versioning: [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
 > **Pre-1.0 disclaimer.** APIs may break in any minor release until `1.0.0` ships.
 > Patch releases (`0.1.0` → `0.1.1`) are bug fixes only.
 
+## [0.6.3](https://github.com/jovandyaz/cenote/compare/v0.6.2...v0.6.3) (2026-06-07)
+
+
+### Documentation
+
+* add PyPI version badge, switch status to milestone-level ([0ec6da6](https://github.com/jovandyaz/cenote/commit/0ec6da6ad0fefb450bd6d62db10e370a3d739e99))
+
 ## [0.6.2](https://github.com/jovandyaz/cenote/compare/v0.6.1...v0.6.2) (2026-06-07)
 
 
