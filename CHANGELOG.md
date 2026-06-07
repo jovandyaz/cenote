@@ -8,6 +8,18 @@ Versioning: [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
 > **Pre-1.0 disclaimer.** APIs may break in any minor release until `1.0.0` ships.
 > Patch releases (`0.1.0` → `0.1.1`) are bug fixes only.
 
+## [0.6.2](https://github.com/jovandyaz/cenote/compare/v0.6.1...v0.6.2) (2026-06-07)
+
+
+### Fixed
+
+* **deps:** pin aiohttp&gt;=3.14 (2 CVEs via ir-datasets) ([1b66fa0](https://github.com/jovandyaz/cenote/commit/1b66fa0ac3402a36a55c2aa8369d853357512798))
+
+
+### Documentation
+
+* refresh status to v0.6.1 and current focus to M1.3 ([8297b5b](https://github.com/jovandyaz/cenote/commit/8297b5b3180b2840808ef9b480b959204ed1bcde))
+
 ## [0.6.1](https://github.com/jovandyaz/cenote/compare/v0.6.0...v0.6.1) (2026-06-02)
 
 
