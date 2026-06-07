@@ -62,21 +62,12 @@ uv run pre-commit run --all-files
 
 ## Release process
 
-cenote uses [Trusted Publishing](https://docs.pypi.org/trusted-publishers/) via GitHub OIDC. The release workflow (`.github/workflows/release.yml`) fires on any `v*` tag push and publishes to PyPI automatically.
+Releases are automated with [release-please](https://github.com/googleapis/release-please) and PyPI [Trusted Publishing](https://docs.pypi.org/trusted-publishers/) (GitHub OIDC). There is no manual tagging.
 
-```bash
-# Bump version in pyproject.toml if needed
-# Update CHANGELOG.md: move [Unreleased] items → [<version>] with date
-# Commit + push:
-git commit -am "release: v0.1.0"
-git push origin main
+1. Land conventional-commit work on `main` (`feat:` / `fix:` / `docs:` … — see above). release-please opens or updates a `chore: release X` PR that bumps `pyproject.toml`, regenerates `CHANGELOG.md`, and syncs `uv.lock`.
+2. Merge that PR. release-please tags `vX.Y.Z`, and the `publish` job builds wheel + sdist, verifies the import in an isolated venv, attaches a CycloneDX SBOM, and publishes to <https://pypi.org/project/cenote-core/> with PEP 740 Sigstore attestations.
 
-# Tag + push tag (triggers release workflow):
-git tag -a v0.1.0 -m "First public release"
-git push --tags
-```
-
-The workflow builds wheel + sdist, verifies the import works, and publishes to <https://pypi.org/project/cenote-core/>. No API tokens needed — OIDC trust is established via the pending publisher registration on PyPI (one-time setup at <https://pypi.org/manage/account/publishing/>).
+No API tokens needed — OIDC trust is the pending-publisher registration on PyPI (one-time setup at <https://pypi.org/manage/account/publishing/>). `.github/workflows/release.yml` remains as a manual `workflow_dispatch` fallback to re-publish an existing tag.
 
 ## Where to ask questions
 

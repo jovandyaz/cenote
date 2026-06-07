@@ -1,6 +1,7 @@
 # cenote
 
 [![PyPI](https://img.shields.io/pypi/v/cenote-core)](https://pypi.org/project/cenote-core/)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/jovandyaz/cenote/badge)](https://scorecard.dev/viewer/?uri=github.com/jovandyaz/cenote)
 [![CI](https://github.com/jovandyaz/cenote/actions/workflows/ci.yml/badge.svg)](https://github.com/jovandyaz/cenote/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/jovandyaz/cenote/branch/main/graph/badge.svg)](https://codecov.io/gh/jovandyaz/cenote)
 [![Docs](https://img.shields.io/badge/docs-mkdocs--material-blue)](https://jovandyaz.github.io/cenote/)
